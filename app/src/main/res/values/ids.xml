@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="alarm_notification" type="id">72</item>
+    <item name="alarm_request" type="id">88</item>
+</resources>
