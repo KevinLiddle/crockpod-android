@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+    
+    <TextView
+        android:id="@+id/alarm_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/delete_alarm_button"
+        android:hint="7:00am - NPR Hourly News and other things that are super cool that idk about"
+        android:layout_margin="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+
+    <ImageButton
+        android:id="@+id/delete_alarm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_delete"
+        android:tint="@android:color/holo_red_dark"
+        android:background="@android:color/transparent"/>
+
+</RelativeLayout>

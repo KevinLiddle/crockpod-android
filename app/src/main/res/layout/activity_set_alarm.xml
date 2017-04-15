@@ -4,7 +4,6 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
                 tools:context="com.krevin.crockpod.SetAlarmActivity">
 
     <RelativeLayout
@@ -54,38 +53,4 @@
 
         </LinearLayout>
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/alarm_message"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="@color/black"
-        android:alpha="0.8">
-
-        <TextView
-            android:id="@+id/alarm_text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Good Morning"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="80sp" />
-        <Button
-            android:id="@+id/alarm_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:layout_weight="0.2"
-            android:background="@color/black"
-            android:text="@string/cancel"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:layout_gravity="bottom"
-            android:textColor="@color/white"/>
-    </LinearLayout>
 </RelativeLayout>

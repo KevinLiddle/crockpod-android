@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-
 public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     public static Intent getIntent(Context context) {
@@ -14,12 +13,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent setAlarmIntent = SetAlarmActivity.getIntent(context);
-        setAlarmIntent.putExtras(intent);
-        setAlarmIntent.putExtra(SetAlarmActivity.ALARM_RINGING_KEY, true);
-        setAlarmIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent alarmListIntent = AlarmListActivity.getIntent(context);
+        alarmListIntent.putExtras(intent);
+        alarmListIntent.putExtra(AlarmListActivity.ALARM_RINGING_KEY, true);
+        alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        context.startActivity(setAlarmIntent);
+        context.startActivity(alarmListIntent);
         setResultCode(Activity.RESULT_OK);
     }
 

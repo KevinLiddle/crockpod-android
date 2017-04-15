@@ -7,6 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowDisablePreview">true</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:textViewStyle">@style/BodyText</item>
+        <item name="android:textColorHint">@color/white</item>
     </style>
 
     <style name="blackOverlay">
@@ -17,5 +20,11 @@
     <style name="blackOverlayPressed">
         <item name="android:color">@color/black</item>
     </style>
+
+    <style name="BodyText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
 
 </resources>

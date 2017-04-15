@@ -4,4 +4,5 @@
     <string name="set_alarm">Set Alarm</string>
     <string name="cancel">CANCEL</string>
     <string name="alarm_notification_text">WAKEY WAKEY</string>
+    <string name="good_morning">Good Morning</string>
 </resources>
