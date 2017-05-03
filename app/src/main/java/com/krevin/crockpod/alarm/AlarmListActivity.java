@@ -1,4 +1,4 @@
-package com.krevin.crockpod;
+package com.krevin.crockpod.alarm;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -22,11 +22,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.krevin.crockpod.R;
+import com.krevin.crockpod.UniqueIntId;
+import com.pkmmte.pkrss.Article;
+import com.pkmmte.pkrss.Callback;
+import com.pkmmte.pkrss.PkRSS;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class AlarmListActivity extends Activity {
+public class AlarmListActivity extends Activity implements Callback {
 
     public static final String TAG = AlarmListActivity.class.getCanonicalName();
     public static final String ALARM_RINGING_KEY = "alarm_ringing";
@@ -47,12 +53,7 @@ public class AlarmListActivity extends Activity {
         mAlarmRepository = new AlarmRepository(this);
 
         FloatingActionButton mAddAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm_button);
-        mAddAlarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(SetAlarmActivity.getIntent(AlarmListActivity.this));
-            }
-        });
+        mAddAlarmButton.setOnClickListener(view -> startActivity(SetAlarmActivity.getIntent(AlarmListActivity.this)));
 
         mAlarmList = (RecyclerView) findViewById(R.id.alarm_list);
         mAlarmList.setHasFixedSize(true);
@@ -67,6 +68,20 @@ public class AlarmListActivity extends Activity {
         refreshAlarmList();
     }
 
+    @Override
+    public void onPreload() {}
+
+    @Override
+    public void onLoaded(List<Article> newArticles) {
+        String mediaUrl = newArticles.get(0).getEnclosure().getUrl();
+        blastTheAlarm(mediaUrl);
+    }
+
+    @Override
+    public void onLoadFailed() {
+        Log.e(TAG, "OOPS! Couldn't fetch the RSS feed!");
+    }
+
     private void refreshAlarmList() {
         mAlarmList.swapAdapter(new AlarmListAdapter(mAlarmRepository.all()), true);
     }
@@ -75,38 +90,36 @@ public class AlarmListActivity extends Activity {
         final View alarmMessage = findViewById(R.id.alarm_message);
         Button cancelButton = (Button) findViewById(R.id.alarm_cancel);
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mMediaPlayer != null) {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.release();
-                    mMediaPlayer = null;
-                }
-                alarmMessage.setVisibility(View.INVISIBLE);
+        cancelButton.setOnClickListener(v -> {
+            if (mMediaPlayer != null) {
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                mMediaPlayer = null;
             }
+            alarmMessage.setVisibility(View.INVISIBLE);
         });
 
         if (getIntent().getBooleanExtra(ALARM_RINGING_KEY, false)) {
             alarmMessage.setVisibility(View.VISIBLE);
             showAlarmNotification();
-            blastTheAlarm();
+
+            String feedUrl = getIntent().getStringExtra(Alarm.PODCAST_FEED_KEY);
+            PkRSS.with(this).load(feedUrl).callback(this).async();
         }
     }
 
-    private void blastTheAlarm() {
+    private void blastTheAlarm(String mediaUrl) {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        String mediaUrl = getIntent().getStringExtra(Alarm.PODCAST_FEED_KEY);
 
         try {
             mMediaPlayer.setDataSource(mediaUrl);
-            mMediaPlayer.prepare();
         } catch (IOException e) {
             Log.e(TAG, String.format("Error playing media from URL: %s", mediaUrl));
         }
 
-        mMediaPlayer.start();
+        mMediaPlayer.prepareAsync();
+        mMediaPlayer.setOnPreparedListener(mp -> mMediaPlayer.start());
     }
 
     private void showAlarmNotification() {
@@ -160,22 +173,19 @@ public class AlarmListActivity extends Activity {
 
         void bindAlarm(final Alarm alarm) {
             SimpleDateFormat format = new SimpleDateFormat("h:ma");
-            String text = format.format(alarm.getTime()) + " - " + alarm.getPodcastUrl();
+            String text = format.format(alarm.getTime()) + " - " + alarm.getPodcastName();
             mAlarmTextView.setText(text);
 
             final AlarmManager alarmManager = (AlarmManager) AlarmListActivity.this.getSystemService(Context.ALARM_SERVICE);
-            mDeleteAlarmButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    PendingIntent alarmPendingIntent = SetAlarmActivity.buildPendingIntent(
-                            AlarmListActivity.this,
-                            alarm.getId(),
-                            alarm.getIntent()
-                    );
-                    alarmManager.cancel(alarmPendingIntent);
-                    mAlarmRepository.remove(alarm.getId());
-                    refreshAlarmList();
-                }
+            mDeleteAlarmButton.setOnClickListener(view -> {
+                PendingIntent alarmPendingIntent = SetAlarmActivity.buildPendingIntent(
+                        AlarmListActivity.this,
+                        alarm.getId(),
+                        alarm.getIntent()
+                );
+                alarmManager.cancel(alarmPendingIntent);
+                mAlarmRepository.remove(alarm.getId());
+                refreshAlarmList();
             });
         }
     }

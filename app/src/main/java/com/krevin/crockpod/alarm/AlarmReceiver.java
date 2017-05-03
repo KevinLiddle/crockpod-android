@@ -1,4 +1,4 @@
-package com.krevin.crockpod;
+package com.krevin.crockpod.alarm;
 
 import android.app.Activity;
 import android.content.Context;

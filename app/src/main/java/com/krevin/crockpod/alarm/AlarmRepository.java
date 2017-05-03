@@ -1,9 +1,11 @@
-package com.krevin.crockpod;
+package com.krevin.crockpod.alarm;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.krevin.crockpod.UniqueIntId;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -37,10 +39,10 @@ public class AlarmRepository {
         return result;
     }
 
-    public Intent get(int id) {
+    public Alarm get(int id) {
         String intentUri = alarmSharedPrefs.getString(String.valueOf(id), "");
         try {
-            return parseIntentUri(intentUri);
+            return new Alarm(id, parseIntentUri(intentUri));
         } catch (URISyntaxException e) {
             Log.e(REPO_KEY, "Error parsing Intent URI: " + intentUri);
             return null;

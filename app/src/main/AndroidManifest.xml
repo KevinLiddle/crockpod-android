@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".AlarmListActivity"
+            android:name=".alarm.AlarmListActivity"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -18,9 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".SetAlarmActivity"/>
+        <activity android:name=".alarm.SetAlarmActivity"/>
 
-        <receiver android:name=".AlarmReceiver"/>
+        <receiver android:name=".alarm.AlarmReceiver"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
