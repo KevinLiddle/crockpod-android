@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/activity_set_alarm"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:clickable="true"
-                tools:context="com.krevin.crockpod.alarm.SetAlarmActivity">
+<LinearLayout android:id="@+id/activity_set_alarm"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginBottom="@dimen/activity_vertical_margin"
+              android:layout_marginEnd="@dimen/activity_horizontal_margin"
+              android:layout_marginStart="@dimen/activity_horizontal_margin"
+              android:layout_marginTop="@dimen/activity_vertical_margin"
+              android:clickable="true"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
+              android:orientation="vertical"
+              tools:context="com.krevin.crockpod.alarm.SetAlarmActivity">
 
     <TimePicker
         android:id="@+id/time_picker"
@@ -19,36 +20,70 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"/>
 
-    <LinearLayout
-        android:id="@+id/search_bar"
+    <com.krevin.crockpod.AutoCompleteSearchView
+        android:id="@+id/podcast_rss_feed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/time_picker"
-        android:orientation="vertical">
+        android:layout_margin="10dp"
+        android:background="@color/lightGrey"
+        android:hint="@string/podcast_search_hint"
+        android:padding="8sp"
+        android:textColorHint="@color/offWhite"
+        android:textSize="23sp"/>
 
-        <com.krevin.crockpod.AutoCompleteSearchView
-            android:id="@+id/podcast_rss_feed"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/selected_podcast_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_crockpod_logo"/>
+
+        <ImageButton
+            android:id="@+id/unselect_podcast_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/ic_delete"
+            android:tint="@android:color/holo_red_dark"/>
+
+        <TextView
+            android:id="@+id/selected_podcast_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/selected_podcast_logo"
+            android:layout_toStartOf="@id/unselect_podcast_button"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:hint="Selected Podcast that is super cool"
+            android:maxLines="1"
+            android:textSize="23sp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom|center_vertical"
+        android:layout_margin="10dp">
+
+        <Button
+            android:id="@+id/set_alarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@color/lightGrey"
-            android:hint="@string/podcast_search_hint"
-            android:padding="8sp"
-            android:textColorHint="@color/offWhite"
-            android:textSize="23sp"/>
+            android:layout_gravity="bottom|center_vertical"
+            android:background="@drawable/positive_button"
+            android:text="@string/set_alarm"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/set_alarm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:background="@drawable/positive_button"
-        android:text="@string/set_alarm"
-        android:textColor="@color/white"
-        android:textSize="20sp"/>
-
-</RelativeLayout>
+</LinearLayout>

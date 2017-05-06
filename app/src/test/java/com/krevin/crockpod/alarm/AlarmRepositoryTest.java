@@ -1,10 +1,10 @@
-package com.krevin.crockpod;
+package com.krevin.crockpod.alarm;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.krevin.crockpod.alarm.Alarm;
-import com.krevin.crockpod.alarm.AlarmRepository;
+import com.krevin.crockpod.BuildConfig;
+import com.krevin.crockpod.podcast.Podcast;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -33,7 +32,20 @@ public class AlarmRepositoryTest {
 
     @Test
     public void canAddAndGetAlarms() {
-        Alarm alarm = new Alarm("cool_podcast_url", Calendar.getInstance(), context);
+        Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
+        Alarm alarm = new Alarm(context, podcast, 14, 33);
+
+        int id = alarmRepository.add(alarm);
+        Alarm fetchedAlarm = alarmRepository.get(id);
+
+        assertEquals(id, fetchedAlarm.getId());
+        assertAlarmsEqual(alarm, fetchedAlarm);
+    }
+
+    @Test
+    public void setsIdOnAddedAlarm() {
+        Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
+        Alarm alarm = new Alarm(context, podcast, 18, 7);
 
         int id = alarmRepository.add(alarm);
         Alarm fetchedAlarm = alarmRepository.get(id);
@@ -44,9 +56,9 @@ public class AlarmRepositoryTest {
 
     @Test
     public void canGetAllAlarms() {
-        Alarm alarm1 = new Alarm("cool_podcast_url", Calendar.getInstance(), context);
-        Alarm alarm2 = new Alarm("neat_podcast_url", Calendar.getInstance(), context);
-        Alarm alarm3 = new Alarm("lame_podcast_url", Calendar.getInstance(), context);
+        Alarm alarm1 = new Alarm(context, new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art"), 9, 25);
+        Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 8, 37);
+        Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 50);
 
         alarmRepository.add(alarm1);
         alarmRepository.add(alarm2);
@@ -61,9 +73,9 @@ public class AlarmRepositoryTest {
 
     @Test
     public void canRemoveAlarms() {
-        Alarm alarm1 = new Alarm("cool_podcast_url", Calendar.getInstance(), context);
-        Alarm alarm2 = new Alarm("neat_podcast_url", Calendar.getInstance(), context);
-        Alarm alarm3 = new Alarm("lame_podcast_url", Calendar.getInstance(), context);
+        Alarm alarm1 = new Alarm(context, new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art"), 4, 40);
+        Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 3, 30);
+        Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 2, 20);
 
         alarmRepository.add(alarm1);
         int id2 = alarmRepository.add(alarm2);
@@ -85,8 +97,10 @@ public class AlarmRepositoryTest {
     }
 
     private void assertAlarmsEqual(Alarm expected, Alarm actual) {
+        assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getIntent().getComponent(), actual.getIntent().getComponent());
-        assertEquals(expected.getPodcastUrl(), actual.getPodcastUrl());
-        assertEquals(expected.getTime(), actual.getTime());
+        assertEquals(expected.getPodcast().getRssFeedUrl(), actual.getPodcast().getRssFeedUrl());
+        assertEquals(expected.getHourOfDay(), actual.getHourOfDay());
+        assertEquals(expected.getMinute(), actual.getMinute());
     }
 }

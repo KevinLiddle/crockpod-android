@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -28,18 +27,19 @@ import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
 import com.pkmmte.pkrss.PkRSS;
 
+import org.joda.time.format.DateTimeFormat;
+
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AlarmListActivity extends Activity implements Callback {
 
     public static final String TAG = AlarmListActivity.class.getCanonicalName();
-    public static final String ALARM_RINGING_KEY = "alarm_ringing";
+    private static final String CLOCK_FORMAT = "h:ma";
 
-    private MediaPlayer mMediaPlayer;
-    private RecyclerView mAlarmList;
     private AlarmRepository mAlarmRepository;
+    private RecyclerView mAlarmList;
+    private MediaPlayer mMediaPlayer;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, AlarmListActivity.class);
@@ -99,13 +99,21 @@ public class AlarmListActivity extends Activity implements Callback {
             alarmMessage.setVisibility(View.INVISIBLE);
         });
 
-        if (getIntent().getBooleanExtra(ALARM_RINGING_KEY, false)) {
+        if (Alarm.exists(getIntent())) {
             alarmMessage.setVisibility(View.VISIBLE);
             showAlarmNotification();
 
-            String feedUrl = getIntent().getStringExtra(Alarm.PODCAST_FEED_KEY);
-            PkRSS.with(this).load(feedUrl).callback(this).async();
+            requestRssFeedAsync();
         }
+    }
+
+    private void requestRssFeedAsync() {
+        Alarm alarm = new Alarm(this, getIntent());
+
+        PkRSS.with(this)
+                .load(alarm.getPodcast().getRssFeedUrl())
+                .callback(this)
+                .async();
     }
 
     private void blastTheAlarm(String mediaUrl) {
@@ -172,18 +180,13 @@ public class AlarmListActivity extends Activity implements Callback {
         }
 
         void bindAlarm(final Alarm alarm) {
-            SimpleDateFormat format = new SimpleDateFormat("h:ma");
-            String text = format.format(alarm.getTime()) + " - " + alarm.getPodcastName();
+            String text = alarm.getNextTriggerTime().toString(DateTimeFormat.forPattern(CLOCK_FORMAT)) +
+                    " - " + alarm.getPodcast().getName();
             mAlarmTextView.setText(text);
 
             final AlarmManager alarmManager = (AlarmManager) AlarmListActivity.this.getSystemService(Context.ALARM_SERVICE);
             mDeleteAlarmButton.setOnClickListener(view -> {
-                PendingIntent alarmPendingIntent = SetAlarmActivity.buildPendingIntent(
-                        AlarmListActivity.this,
-                        alarm.getId(),
-                        alarm.getIntent()
-                );
-                alarmManager.cancel(alarmPendingIntent);
+                alarmManager.cancel(alarm.buildPendingIntent());
                 mAlarmRepository.remove(alarm.getId());
                 refreshAlarmList();
             });

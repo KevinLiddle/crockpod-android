@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView android:id="@+id/podcast_search_item_text"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="10dp"
-          android:textSize="23sp"
-          android:ellipsize="end"
-          android:hint="podcast name here and it's a really cool one"
-          android:maxLines="1"
-          android:orientation="vertical">
-</TextView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/podcast_search_item_logo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/podcast_logo"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/podcast_search_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:ellipsize="end"
+            android:hint="podcast name here and it's a really cool one"
+            android:maxLines="1"
+            android:orientation="vertical"
+            android:textSize="23sp"/>
+
+        <TextView
+            android:id="@+id/podcast_search_item_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:hint="WKJL studios"
+            android:maxLines="1"
+            android:textSize="12sp"/>
+    </LinearLayout>
+</LinearLayout>

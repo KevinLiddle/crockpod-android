@@ -1,11 +1,12 @@
 package com.krevin.crockpod.podcast;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.krevin.crockpod.HttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,17 +19,30 @@ import java.util.function.Consumer;
 public class PodcastSearch {
 
     private static final String TAG = PodcastSearch.class.getCanonicalName();
-    private static final String URL = "https://itunes.apple.com/search?media=podcast&attribute=titleTerm&limit=%d&term=%s";
+    private static final String PROTOCOL = "https";
+    private static final String HOST = "itunes.apple.com";
+    private static final String SEARCH_PATH = "search";
+    private static final String MEDIA_PARAM_KEY = "media";
+    private static final String PODCAST_PARAM = "podcast";
+    private static final String TITLE_PARAM_KEY = "attribute";
+    private static final String TITLE_PARAM = "titleTerm";
+    private static final String LIMIT_PARAM_KEY = "limit";
+    private static final String TERM_PARAM_KEY = "term";
     private static final int LIMIT = 3;
-    private final RequestQueue requestQueue;
+    private static final String RESPONSE_TITLE_KEY = "collectionName";
+    private static final String RESPONSE_FEED_KEY = "feedUrl";
+    private static final String RESPONSE_ARTIST_KEY = "artistName";
+    private static final String RESPONSE_ARTWORK_KEY = "artworkUrl100";
+    private static final String RESPONSE_RESULTS_KEY = "results";
+
+    private final RequestQueue mRequestQueue;
 
     public PodcastSearch(Context context) {
-        requestQueue = Volley.newRequestQueue(context);
-        requestQueue.start();
+        mRequestQueue = HttpClient.getInstance(context.getApplicationContext()).getRequestQueue();
     }
 
     public List<Podcast> search(String title, final Consumer<List<Podcast>> onResponse) {
-        requestQueue.cancelAll(request -> true);
+        mRequestQueue.cancelAll(request -> true);
         final List<Podcast> results = new ArrayList<>();
         JsonObjectRequest request = new JsonObjectRequest(
                 buildUrl(title),
@@ -36,17 +50,23 @@ public class PodcastSearch {
                 response -> onResponse.accept(parseResults(response)),
                 error -> Log.e(TAG, "Error searching for podcasts: " + error.getMessage())
         );
-        requestQueue.add(request);
+        mRequestQueue.add(request);
         return results;
     }
 
     private List<Podcast> parseResults(JSONObject response) {
         List<Podcast> results = new ArrayList<>();
         try {
-            JSONArray jsonResults = response.getJSONArray("results");
+            JSONArray jsonResults = response.getJSONArray(RESPONSE_RESULTS_KEY);
             for (int i = 0; i < jsonResults.length(); i++) {
                 JSONObject json = jsonResults.getJSONObject(i);
-                results.add(new Podcast(json.getString("collectionName"), json.getString("feedUrl")));
+                Podcast podcast = new Podcast(
+                        json.getString(RESPONSE_TITLE_KEY),
+                        json.getString(RESPONSE_FEED_KEY),
+                        json.getString(RESPONSE_ARTIST_KEY),
+                        json.getString(RESPONSE_ARTWORK_KEY)
+                );
+                results.add(podcast);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -55,6 +75,15 @@ public class PodcastSearch {
     }
 
     private String buildUrl(String term) {
-        return String.format(URL, LIMIT, term);
+        return new Uri.Builder()
+                .scheme(PROTOCOL)
+                .authority(HOST)
+                .path(SEARCH_PATH)
+                .appendQueryParameter(MEDIA_PARAM_KEY, PODCAST_PARAM)
+                .appendQueryParameter(TITLE_PARAM_KEY, TITLE_PARAM)
+                .appendQueryParameter(LIMIT_PARAM_KEY, String.valueOf(LIMIT))
+                .appendQueryParameter(TERM_PARAM_KEY, term)
+                .build()
+                .toString();
     }
 }

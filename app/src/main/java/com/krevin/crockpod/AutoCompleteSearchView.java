@@ -18,9 +18,9 @@ public class AutoCompleteSearchView<T> extends AutoCompleteTextView {
         mContext = context;
     }
 
-    public void init(int layoutId, SearchFunction<List<T>> searchFunc) {
+    public void init(ArrayAdapter<T> adapter, SearchFunction<List<T>> searchFunc) {
         mSearchFunc = searchFunc;
-        mAdapter = new ArrayAdapter<>(mContext, layoutId);
+        mAdapter = adapter;
         setAdapter(mAdapter);
     }
 

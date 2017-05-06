@@ -15,8 +15,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent alarmListIntent = AlarmListActivity.getIntent(context);
         alarmListIntent.putExtras(intent);
-        alarmListIntent.putExtra(AlarmListActivity.ALARM_RINGING_KEY, true);
         alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        new Alarm(context, intent).set();
 
         context.startActivity(alarmListIntent);
         setResultCode(Activity.RESULT_OK);

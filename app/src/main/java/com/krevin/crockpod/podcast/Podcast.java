@@ -4,10 +4,14 @@ public class Podcast {
 
     private String mName;
     private String mRssFeedUrl;
+    private String mAuthor;
+    private String mLogoUrl;
 
-    public Podcast(String name, String rssFeedUrl) {
+    public Podcast(String name, String rssFeedUrl, String author, String logoUrl) {
         mName = name;
         mRssFeedUrl = rssFeedUrl;
+        mAuthor = author;
+        mLogoUrl = logoUrl;
     }
 
     public String getName() {
@@ -16,6 +20,14 @@ public class Podcast {
 
     public String getRssFeedUrl() {
         return mRssFeedUrl;
+    }
+
+    public String getAuthor() {
+        return mAuthor;
+    }
+
+    public String getLogoUrl() {
+        return mLogoUrl;
     }
 
     public String toString() {
