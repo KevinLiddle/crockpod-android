@@ -1,7 +1,5 @@
 package com.krevin.crockpod.alarm;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
@@ -42,12 +40,14 @@ public class Alarm {
         return intent.hasExtra(PODCAST_FEED_KEY);
     }
 
-    public int getId() {
-        int id = mId == null ? mIntent.getIntExtra(ALARM_ID_KEY, -1) : mId;
-        if (id < 0) {
-            throw new IllegalStateException("ID not set!");
+    public Integer getId() {
+        if (mId != null) {
+            return mId;
         }
-        return id;
+        if (mIntent != null && mIntent.hasExtra(ALARM_ID_KEY)) {
+            return mIntent.getIntExtra(ALARM_ID_KEY, 0);
+        }
+        return null;
     }
 
     public void setId(int id) {
@@ -70,8 +70,18 @@ public class Alarm {
         return mHourOfDay == null ? mIntent.getIntExtra(ALARM_HOUR_KEY, 0) : mHourOfDay;
     }
 
+    public void setHourOfDay(int hourOfDay) {
+        mHourOfDay = hourOfDay;
+        getIntent().putExtra(ALARM_HOUR_KEY, hourOfDay);
+    }
+
     public int getMinute() {
         return mMinute == null ? mIntent.getIntExtra(ALARM_MINUTE_KEY, 0) : mMinute;
+    }
+
+    public void setMinute(int minute) {
+        mMinute = minute;
+        getIntent().putExtra(ALARM_MINUTE_KEY, minute);
     }
 
     public DateTime getNextTriggerTime() {
@@ -79,29 +89,10 @@ public class Alarm {
         DateTime target = now
                 .withHourOfDay(getHourOfDay())
                 .withMinuteOfHour(getMinute())
-                .withSecondOfMinute(0);
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
 
         return target.getMillis() > now.getMillis() ? target : target.plusMinutes(2); //target.plusDays(1);
-    }
-
-    public PendingIntent buildPendingIntent() {
-        return PendingIntent.getBroadcast(
-                mContext.getApplicationContext(),
-                getId(),
-                getIntent(),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
-    }
-
-    public void set() {
-        DateTime nextAlarmTime = getNextTriggerTime();
-
-        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                nextAlarmTime.getMillis(),
-                buildPendingIntent()
-        );
     }
 
     private Podcast buildPodcast() {

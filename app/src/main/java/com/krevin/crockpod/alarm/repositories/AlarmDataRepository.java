@@ -1,4 +1,4 @@
-package com.krevin.crockpod.alarm;
+package com.krevin.crockpod.alarm.repositories;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,20 +6,21 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.krevin.crockpod.UniqueIntId;
+import com.krevin.crockpod.alarm.Alarm;
 
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class AlarmRepository {
+public class AlarmDataRepository {
 
-    private static final String REPO_KEY = AlarmRepository.class.getCanonicalName();
+    private static final String REPO_KEY = AlarmDataRepository.class.getCanonicalName();
 
     private Context mContext;
     private SharedPreferences mAlarmSharedPrefs;
 
-    public AlarmRepository(Context context) {
+    public AlarmDataRepository(Context context) {
         this.mContext = context;
         this.mAlarmSharedPrefs = context.getSharedPreferences(REPO_KEY, Context.MODE_PRIVATE);
     }
@@ -38,8 +39,8 @@ public class AlarmRepository {
         return buildAlarm(mAlarmSharedPrefs.getString(String.valueOf(id), ""));
     }
 
-    public int add(Alarm alarm) {
-        int id = UniqueIntId.generate(mContext);
+    public int put(Alarm alarm) {
+        int id = alarm.getId() == null ? UniqueIntId.generate(mContext) : alarm.getId();
         alarm.setId(id);
 
         mAlarmSharedPrefs
@@ -52,6 +53,10 @@ public class AlarmRepository {
 
     public void remove(int id) {
         mAlarmSharedPrefs.edit().remove(String.valueOf(id)).apply();
+    }
+
+    private boolean exists(int id) {
+        return mAlarmSharedPrefs.contains(String.valueOf(id));
     }
 
     private Alarm buildAlarm(String intentUri) {

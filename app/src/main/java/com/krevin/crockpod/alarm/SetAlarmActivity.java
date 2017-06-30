@@ -12,12 +12,12 @@ import android.widget.TimePicker;
 
 import com.krevin.crockpod.AutoCompleteSearchView;
 import com.krevin.crockpod.R;
+import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 import com.krevin.crockpod.podcast.Podcast;
 import com.krevin.crockpod.podcast.PodcastSearch;
 
 public class SetAlarmActivity extends Activity {
 
-    private AlarmRepository mAlarmRepository;
     private Podcast mPodcast;
 
     public static Intent getIntent(Context context) {
@@ -28,8 +28,6 @@ public class SetAlarmActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm);
-
-        mAlarmRepository = new AlarmRepository(this);
 
         final TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
         final AutoCompleteSearchView<Podcast> podcastSearchField = (AutoCompleteSearchView<Podcast>) findViewById(R.id.podcast_rss_feed);
@@ -55,9 +53,7 @@ public class SetAlarmActivity extends Activity {
         setAlarmButton.setOnClickListener(v -> {
             if (mPodcast != null) {
                 Alarm alarm = new Alarm(this, mPodcast, timePicker.getHour(), timePicker.getMinute());
-                mAlarmRepository.add(alarm);
-
-                alarm.set();
+                new AlarmRepository(this).set(alarm);
                 finish();
             }
         });

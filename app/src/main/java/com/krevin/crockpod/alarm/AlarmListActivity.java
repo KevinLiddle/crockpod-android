@@ -1,7 +1,6 @@
 package com.krevin.crockpod.alarm;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.UniqueIntId;
+import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
 import com.pkmmte.pkrss.PkRSS;
@@ -35,11 +35,11 @@ import java.util.List;
 public class AlarmListActivity extends Activity implements Callback {
 
     public static final String TAG = AlarmListActivity.class.getCanonicalName();
-    private static final String CLOCK_FORMAT = "h:ma";
+    private static final String CLOCK_FORMAT = "h:mma";
 
-    private AlarmRepository mAlarmRepository;
     private RecyclerView mAlarmList;
     private MediaPlayer mMediaPlayer;
+    private AlarmRepository mAlarmRepository;
 
     public static Intent getIntent(Context context) {
         return new Intent(context, AlarmListActivity.class);
@@ -83,7 +83,7 @@ public class AlarmListActivity extends Activity implements Callback {
     }
 
     private void refreshAlarmList() {
-        mAlarmList.swapAdapter(new AlarmListAdapter(mAlarmRepository.all()), true);
+        mAlarmList.swapAdapter(new AlarmListAdapter(mAlarmRepository.list()), true);
     }
 
     private void setUpAlarmRingingViews() {
@@ -100,6 +100,7 @@ public class AlarmListActivity extends Activity implements Callback {
         });
 
         if (Alarm.exists(getIntent())) {
+            Log.d(TAG, "Alarm is about to start ringing");
             alarmMessage.setVisibility(View.VISIBLE);
             showAlarmNotification();
 
@@ -109,6 +110,7 @@ public class AlarmListActivity extends Activity implements Callback {
 
     private void requestRssFeedAsync() {
         Alarm alarm = new Alarm(this, getIntent());
+        Log.d(TAG, alarm.getIntent().getExtras().toString());
 
         PkRSS.with(this)
                 .load(alarm.getPodcast().getRssFeedUrl())
@@ -184,10 +186,8 @@ public class AlarmListActivity extends Activity implements Callback {
                     " - " + alarm.getPodcast().getName();
             mAlarmTextView.setText(text);
 
-            final AlarmManager alarmManager = (AlarmManager) AlarmListActivity.this.getSystemService(Context.ALARM_SERVICE);
             mDeleteAlarmButton.setOnClickListener(view -> {
-                alarmManager.cancel(alarm.buildPendingIntent());
-                mAlarmRepository.remove(alarm.getId());
+                mAlarmRepository.cancel(alarm);
                 refreshAlarmList();
             });
         }

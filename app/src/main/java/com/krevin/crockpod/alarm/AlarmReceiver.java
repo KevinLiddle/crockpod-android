@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
+import com.krevin.crockpod.alarm.repositories.AlarmRepository;
+
 public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     public static Intent getIntent(Context context) {
@@ -15,9 +17,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent alarmListIntent = AlarmListActivity.getIntent(context);
         alarmListIntent.putExtras(intent);
-        alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);
 
-        new Alarm(context, intent).set();
+        new AlarmRepository(context).set(new Alarm(context, intent));
 
         context.startActivity(alarmListIntent);
         setResultCode(Activity.RESULT_OK);
