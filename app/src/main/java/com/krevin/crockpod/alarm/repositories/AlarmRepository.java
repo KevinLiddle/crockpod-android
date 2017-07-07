@@ -18,6 +18,11 @@ public class AlarmRepository {
         mServiceRepository = new AlarmServiceRepository(context);
     }
 
+    AlarmRepository(AlarmDataRepository dataRepo, AlarmServiceRepository serviceRepo) {
+        mDataRepository = dataRepo;
+        mServiceRepository = serviceRepo;
+    }
+
     public void set(Alarm alarm) {
         DateTime nextTriggerTime = alarm.getNextTriggerTime();
         alarm.setHourOfDay(nextTriggerTime.getHourOfDay());

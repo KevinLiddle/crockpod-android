@@ -9,13 +9,13 @@ import org.joda.time.DateTime;
 
 public class Alarm {
 
-    private static final String PODCAST_FEED_KEY = "podcast_feed";
-    private static final String PODCAST_NAME_KEY = "podcast_name";
-    private static final String PODCAST_AUTHOR_KEY = "podcast_author";
-    private static final String PODCAST_LOGO_KEY = "podcast_logo";
-    private static final String ALARM_ID_KEY = "alarm_id";
-    private static final String ALARM_HOUR_KEY = "alarm_hour";
-    private static final String ALARM_MINUTE_KEY = "alarm_minute";
+    static final String PODCAST_FEED_KEY = "podcast_feed";
+    static final String PODCAST_NAME_KEY = "podcast_name";
+    static final String PODCAST_AUTHOR_KEY = "podcast_author";
+    static final String PODCAST_LOGO_KEY = "podcast_logo";
+    static final String ALARM_ID_KEY = "alarm_id";
+    static final String ALARM_HOUR_KEY = "alarm_hour";
+    static final String ALARM_MINUTE_KEY = "alarm_minute";
 
     private Intent mIntent;
     private Podcast mPodcast;
@@ -54,10 +54,6 @@ public class Alarm {
         mId = id;
     }
 
-    public Context getContext() {
-        return mContext;
-    }
-
     public Intent getIntent() {
         return mIntent == null ? buildIntent() : mIntent;
     }
@@ -92,7 +88,7 @@ public class Alarm {
                 .withSecondOfMinute(0)
                 .withMillisOfSecond(0);
 
-        return target.getMillis() > now.getMillis() ? target : target.plusMinutes(2); //target.plusDays(1);
+        return target.isAfter(now) ? target : target.plusDays(1); // target.plusMinutes(2);
     }
 
     private Podcast buildPodcast() {
@@ -100,8 +96,7 @@ public class Alarm {
                 mIntent.getStringExtra(PODCAST_NAME_KEY),
                 mIntent.getStringExtra(PODCAST_FEED_KEY),
                 mIntent.getStringExtra(PODCAST_AUTHOR_KEY),
-                mIntent.getStringExtra(PODCAST_LOGO_KEY)
-        );
+                mIntent.getStringExtra(PODCAST_LOGO_KEY));
     }
 
     private Intent buildIntent() {

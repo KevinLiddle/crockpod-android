@@ -20,8 +20,7 @@ public class AlarmServiceRepository {
         mAlarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 alarm.getNextTriggerTime().getMillis(),
-                buildPendingIntent(alarm)
-        );
+                buildPendingIntent(alarm));
     }
 
     public void cancel(Alarm alarm) {

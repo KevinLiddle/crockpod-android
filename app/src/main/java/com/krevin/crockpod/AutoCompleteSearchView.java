@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class AutoCompleteSearchView<T> extends AutoCompleteTextView {
-    private final Context mContext;
     private SearchFunction<List<T>> mSearchFunc;
     private ArrayAdapter<T> mAdapter;
 
     public AutoCompleteSearchView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        mContext = context;
     }
 
     public void init(ArrayAdapter<T> adapter, SearchFunction<List<T>> searchFunc) {

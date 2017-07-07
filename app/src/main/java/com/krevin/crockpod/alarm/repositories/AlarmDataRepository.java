@@ -55,10 +55,6 @@ public class AlarmDataRepository {
         mAlarmSharedPrefs.edit().remove(String.valueOf(id)).apply();
     }
 
-    private boolean exists(int id) {
-        return mAlarmSharedPrefs.contains(String.valueOf(id));
-    }
-
     private Alarm buildAlarm(String intentUri) {
         try {
             return new Alarm(mContext, parseIntentUri(intentUri));

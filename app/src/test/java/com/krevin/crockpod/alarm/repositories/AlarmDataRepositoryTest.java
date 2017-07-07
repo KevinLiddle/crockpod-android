@@ -1,10 +1,10 @@
-package com.krevin.crockpod.alarm;
+package com.krevin.crockpod.alarm.repositories;
 
 import android.app.Activity;
 import android.content.Context;
 
 import com.krevin.crockpod.BuildConfig;
-import com.krevin.crockpod.alarm.repositories.AlarmDataRepository;
+import com.krevin.crockpod.alarm.Alarm;
 import com.krevin.crockpod.podcast.Podcast;
 
 import org.junit.Before;
