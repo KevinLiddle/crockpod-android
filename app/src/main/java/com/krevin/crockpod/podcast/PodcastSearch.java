@@ -1,11 +1,8 @@
 package com.krevin.crockpod.podcast;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.krevin.crockpod.HttpClient;
 
 import org.json.JSONArray;
@@ -35,23 +32,19 @@ public class PodcastSearch {
     private static final String RESPONSE_ARTWORK_KEY = "artworkUrl100";
     private static final String RESPONSE_RESULTS_KEY = "results";
 
-    private final RequestQueue mRequestQueue;
+    private final HttpClient mHttpClient;
 
-    public PodcastSearch(Context context) {
-        mRequestQueue = HttpClient.getInstance(context.getApplicationContext()).getRequestQueue();
+    public PodcastSearch(HttpClient httpClient) {
+        mHttpClient = httpClient;
     }
 
-    public List<Podcast> search(String title, final Consumer<List<Podcast>> onResponse) {
-        mRequestQueue.cancelAll(request -> true);
-        final List<Podcast> results = new ArrayList<>();
-        JsonObjectRequest request = new JsonObjectRequest(
+    public void search(String title, final Consumer<List<Podcast>> onResponse) {
+        mHttpClient.cancelAllRequests();
+        mHttpClient.getJson(
                 buildUrl(title),
-                null,
                 response -> onResponse.accept(parseResults(response)),
                 error -> Log.e(TAG, "Error searching for podcasts: " + error.getMessage())
         );
-        mRequestQueue.add(request);
-        return results;
     }
 
     private List<Podcast> parseResults(JSONObject response) {

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TimePicker;
 
 import com.krevin.crockpod.AutoCompleteSearchView;
+import com.krevin.crockpod.HttpClient;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 import com.krevin.crockpod.podcast.Podcast;
@@ -32,7 +33,11 @@ public class SetAlarmActivity extends Activity {
         final TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
         final AutoCompleteSearchView<Podcast> podcastSearchField = (AutoCompleteSearchView<Podcast>) findViewById(R.id.podcast_rss_feed);
 
-        podcastSearchField.init(new PodcastArrayAdapter(this), new PodcastSearch(this)::search);
+        HttpClient httpClient = HttpClient.getInstance(getApplicationContext());
+        PodcastArrayAdapter podcastArrayAdapter = new PodcastArrayAdapter(this, httpClient.getImageLoader());
+        PodcastSearch podcastSearch = new PodcastSearch(httpClient);
+
+        podcastSearchField.init(podcastArrayAdapter, podcastSearch::search);
         podcastSearchField.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 timePicker.setVisibility(View.GONE);

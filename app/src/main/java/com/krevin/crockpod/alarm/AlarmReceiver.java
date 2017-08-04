@@ -15,7 +15,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent alarmListIntent = AlarmListActivity.getIntent(context);
+        Intent alarmListIntent = AlarmRingingActivity.getIntent(context);
         alarmListIntent.putExtras(intent);
         alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);
 

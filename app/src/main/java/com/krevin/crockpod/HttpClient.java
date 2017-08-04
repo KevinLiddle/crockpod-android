@@ -5,8 +5,12 @@ import android.graphics.Bitmap;
 import android.util.LruCache;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 public class HttpClient {
 
@@ -18,9 +22,11 @@ public class HttpClient {
         mRequestQueue = Volley.newRequestQueue(context);
         mImageLoader = new ImageLoader(this.mRequestQueue, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> mCache = new LruCache<>(10);
+
             public void putBitmap(String url, Bitmap bitmap) {
                 mCache.put(url, bitmap);
             }
+
             public Bitmap getBitmap(String url) {
                 return mCache.get(url);
             }
@@ -34,8 +40,12 @@ public class HttpClient {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
-        return mRequestQueue;
+    public void cancelAllRequests() {
+        mRequestQueue.cancelAll(r -> true);
+    }
+
+    public void getJson(String url, Response.Listener<JSONObject> onSuccess, Response.ErrorListener onError) {
+        mRequestQueue.add(new JsonObjectRequest(url, null, onSuccess, onError));
     }
 
     public ImageLoader getImageLoader() {

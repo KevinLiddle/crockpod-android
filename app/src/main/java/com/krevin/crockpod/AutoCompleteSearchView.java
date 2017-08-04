@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class AutoCompleteSearchView<T> extends AutoCompleteTextView {
+
+    private static final int MINIMUM_SEARCH_TERM_LENGTH = 3;
+
     private SearchFunction<List<T>> mSearchFunc;
     private ArrayAdapter<T> mAdapter;
 
@@ -24,7 +27,7 @@ public class AutoCompleteSearchView<T> extends AutoCompleteTextView {
 
     @Override
     protected void performFiltering(CharSequence text, int keyCode) {
-        if (text.length() >= 3) {
+        if (text.length() >= MINIMUM_SEARCH_TERM_LENGTH) {
             mSearchFunc.call(
                     text.toString(),
                     results -> {

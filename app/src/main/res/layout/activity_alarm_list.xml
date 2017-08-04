@@ -24,39 +24,4 @@
             android:src="@drawable/ic_crockpod_logo"/>
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/alarm_message"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.8"
-        android:background="@color/black"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/alarm_text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/good_morning"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="80sp"/>
-
-        <Button
-            android:id="@+id/alarm_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="bottom"
-            android:layout_weight="0.2"
-            android:background="@color/black"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/cancel"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="20sp"/>
-    </LinearLayout>
-
 </FrameLayout>

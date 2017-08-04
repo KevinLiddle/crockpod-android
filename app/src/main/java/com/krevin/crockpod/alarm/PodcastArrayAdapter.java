@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.krevin.crockpod.HttpClient;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.podcast.Podcast;
 
@@ -19,9 +18,9 @@ class PodcastArrayAdapter extends ArrayAdapter<Podcast> {
 
     private final ImageLoader mImageLoader;
 
-    PodcastArrayAdapter(@NonNull Context context) {
+    PodcastArrayAdapter(@NonNull Context context, ImageLoader imageLoader) {
         super(context, R.layout.podcast_search_item);
-        mImageLoader = HttpClient.getInstance(context.getApplicationContext()).getImageLoader();
+        mImageLoader = imageLoader;
     }
 
     @NonNull

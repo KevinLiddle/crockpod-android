@@ -1,48 +1,36 @@
 package com.krevin.crockpod.alarm;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.krevin.crockpod.R;
-import com.krevin.crockpod.UniqueIntId;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
-import com.pkmmte.pkrss.Article;
-import com.pkmmte.pkrss.Callback;
-import com.pkmmte.pkrss.PkRSS;
 
 import org.joda.time.format.DateTimeFormat;
 
-import java.io.IOException;
 import java.util.List;
 
-public class AlarmListActivity extends Activity implements Callback {
+public class AlarmListActivity extends Activity {
 
-    public static final String TAG = AlarmListActivity.class.getCanonicalName();
     private static final String CLOCK_FORMAT = "h:mma";
 
     private RecyclerView mAlarmList;
-    private MediaPlayer mMediaPlayer;
     private AlarmRepository mAlarmRepository;
 
     public static Intent getIntent(Context context) {
-        return new Intent(context, AlarmListActivity.class);
+        return new Intent(context, AlarmListActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @Override
@@ -58,8 +46,6 @@ public class AlarmListActivity extends Activity implements Callback {
         mAlarmList = (RecyclerView) findViewById(R.id.alarm_list);
         mAlarmList.setHasFixedSize(true);
         mAlarmList.setLayoutManager(new LinearLayoutManager(this));
-
-        setUpAlarmRingingViews();
     }
 
     @Override
@@ -68,81 +54,8 @@ public class AlarmListActivity extends Activity implements Callback {
         refreshAlarmList();
     }
 
-    @Override
-    public void onPreload() {}
-
-    @Override
-    public void onLoaded(List<Article> newArticles) {
-        String mediaUrl = newArticles.get(0).getEnclosure().getUrl();
-        blastTheAlarm(mediaUrl);
-    }
-
-    @Override
-    public void onLoadFailed() {
-        Log.e(TAG, "OOPS! Couldn't fetch the RSS feed!");
-    }
-
     private void refreshAlarmList() {
         mAlarmList.swapAdapter(new AlarmListAdapter(mAlarmRepository.list()), true);
-    }
-
-    private void setUpAlarmRingingViews() {
-        final View alarmMessage = findViewById(R.id.alarm_message);
-        Button cancelButton = (Button) findViewById(R.id.alarm_cancel);
-
-        cancelButton.setOnClickListener(v -> {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                mMediaPlayer = null;
-            }
-            alarmMessage.setVisibility(View.INVISIBLE);
-        });
-
-        if (Alarm.exists(getIntent())) {
-            Log.d(TAG, "Alarm is about to start ringing");
-            alarmMessage.setVisibility(View.VISIBLE);
-            showAlarmNotification();
-
-            requestRssFeedAsync();
-        }
-    }
-
-    private void requestRssFeedAsync() {
-        Alarm alarm = new Alarm(this, getIntent());
-        Log.d(TAG, alarm.getIntent().getExtras().toString());
-
-        PkRSS.with(this)
-                .load(alarm.getPodcast().getRssFeedUrl())
-                .callback(this)
-                .async();
-    }
-
-    private void blastTheAlarm(String mediaUrl) {
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-
-        try {
-            mMediaPlayer.setDataSource(mediaUrl);
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Error playing media from URL: %s", mediaUrl));
-        }
-
-        mMediaPlayer.prepareAsync();
-        mMediaPlayer.setOnPreparedListener(mp -> mMediaPlayer.start());
-    }
-
-    private void showAlarmNotification() {
-        Notification.Builder builder = new Notification.Builder(this);
-
-        builder.setPriority(Notification.PRIORITY_MAX).
-                setCategory(Notification.CATEGORY_ALARM).
-                setContentTitle(getString(R.string.app_name)).
-                setSmallIcon(R.drawable.ic_crockpod_logo).
-                setStyle(new Notification.BigTextStyle().bigText(getString(R.string.alarm_notification_text)));
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(UniqueIntId.generate(this), builder.build());
     }
 
     private class AlarmListAdapter extends RecyclerView.Adapter<AlarmHolder> {

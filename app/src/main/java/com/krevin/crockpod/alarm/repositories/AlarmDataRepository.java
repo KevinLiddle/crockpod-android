@@ -13,19 +13,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class AlarmDataRepository {
+class AlarmDataRepository {
 
     private static final String REPO_KEY = AlarmDataRepository.class.getCanonicalName();
 
     private Context mContext;
     private SharedPreferences mAlarmSharedPrefs;
 
-    public AlarmDataRepository(Context context) {
+    AlarmDataRepository(Context context) {
         this.mContext = context;
         this.mAlarmSharedPrefs = context.getSharedPreferences(REPO_KEY, Context.MODE_PRIVATE);
     }
 
-    public List<Alarm> all() {
+    List<Alarm> all() {
         return mAlarmSharedPrefs
                 .getAll()
                 .entrySet()
@@ -35,11 +35,11 @@ public class AlarmDataRepository {
                 .collect(Collectors.toList());
     }
 
-    public Alarm get(int id) {
+    Alarm get(int id) {
         return buildAlarm(mAlarmSharedPrefs.getString(String.valueOf(id), ""));
     }
 
-    public int put(Alarm alarm) {
+    int put(Alarm alarm) {
         int id = alarm.getId() == null ? UniqueIntId.generate(mContext) : alarm.getId();
         alarm.setId(id);
 
@@ -51,7 +51,7 @@ public class AlarmDataRepository {
         return id;
     }
 
-    public void remove(int id) {
+    void remove(int id) {
         mAlarmSharedPrefs.edit().remove(String.valueOf(id)).apply();
     }
 
