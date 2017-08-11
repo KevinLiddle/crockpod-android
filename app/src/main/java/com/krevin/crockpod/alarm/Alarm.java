@@ -36,10 +36,6 @@ public class Alarm {
         mMinute = minute;
     }
 
-    public static boolean exists(Intent intent) {
-        return intent.hasExtra(PODCAST_FEED_KEY);
-    }
-
     public Integer getId() {
         if (mId != null) {
             return mId;
@@ -89,6 +85,34 @@ public class Alarm {
                 .withMillisOfSecond(0);
 
         return target.isAfter(now) ? target : target.plusDays(1); // target.plusMinutes(2);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Alarm alarm = (Alarm) o;
+
+        if (getPodcast() != null ? !getPodcast().equals(alarm.getPodcast()) : alarm.getPodcast() != null)
+            return false;
+        if (getHourOfDay() != alarm.getHourOfDay())
+            return false;
+        if (getMinute() != alarm.getMinute())
+            return false;
+        return getId() != null ? getId().equals(alarm.getId()) : alarm.getId() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getPodcast() != null ? getPodcast().hashCode() : 0;
+        result = 31 * result + getHourOfDay();
+        result = 31 * result + getMinute();
+        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
+        return result;
     }
 
     private Podcast buildPodcast() {

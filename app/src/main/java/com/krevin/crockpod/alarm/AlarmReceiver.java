@@ -1,6 +1,5 @@
 package com.krevin.crockpod.alarm;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
@@ -22,7 +21,5 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         new AlarmRepository(context).set(new Alarm(context, intent));
 
         context.startActivity(alarmListIntent);
-        setResultCode(Activity.RESULT_OK);
     }
-
 }

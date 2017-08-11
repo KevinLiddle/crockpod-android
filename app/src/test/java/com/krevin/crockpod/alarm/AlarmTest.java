@@ -118,15 +118,14 @@ public class AlarmTest {
     @Test
     public void getNextTriggerTimeReturnsTheNextDateTimeOfTheHourAndMinuteWhenThe() {
         DateTime now = DateTime.now();
-        int hour = (now.getHourOfDay() - 1) % 24;
-        int minute = (now.getMinuteOfHour() - 5) % 60;
+        DateTime before = new DateTime(now).minusHours(1).minusMinutes(5);
 
-        Alarm alarm = new Alarm(context, null, hour, minute);
+        Alarm alarm = new Alarm(context, null, before.getHourOfDay(), before.getMinuteOfHour());
 
         DateTime triggerTime = alarm.getNextTriggerTime();
 
-        assertEquals(hour, triggerTime.getHourOfDay());
-        assertEquals(minute, triggerTime.getMinuteOfHour());
+        assertEquals(before.getHourOfDay(), triggerTime.getHourOfDay());
+        assertEquals(before.getMinuteOfHour(), triggerTime.getMinuteOfHour());
         assertTrue(triggerTime.isAfter(now));
     }
 

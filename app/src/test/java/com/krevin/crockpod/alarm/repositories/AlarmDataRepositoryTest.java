@@ -40,7 +40,7 @@ public class AlarmDataRepositoryTest {
         Alarm fetchedAlarm = alarmDataRepository.get(id);
 
         assertEquals(id, fetchedAlarm.getId());
-        assertAlarmsEqual(alarm, fetchedAlarm);
+        assertEquals(alarm, fetchedAlarm);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class AlarmDataRepositoryTest {
         Alarm fetchedAlarm = alarmDataRepository.get(id);
 
         assertEquals(id, fetchedAlarm.getId());
-        assertAlarmsEqual(alarm, fetchedAlarm);
+        assertEquals(alarm, fetchedAlarm);
     }
 
     @Test
@@ -67,9 +67,9 @@ public class AlarmDataRepositoryTest {
 
         List<Alarm> alarms = alarmDataRepository.all();
 
-        assertAlarmsEqual(alarm1, alarms.get(0));
-        assertAlarmsEqual(alarm2, alarms.get(1));
-        assertAlarmsEqual(alarm3, alarms.get(2));
+        assertEquals(alarm1, alarms.get(0));
+        assertEquals(alarm2, alarms.get(1));
+        assertEquals(alarm3, alarms.get(2));
     }
 
     @Test
@@ -84,17 +84,17 @@ public class AlarmDataRepositoryTest {
 
         List<Alarm> alarms = alarmDataRepository.all();
 
-        assertAlarmsEqual(alarm1, alarms.get(0));
-        assertAlarmsEqual(alarm2, alarms.get(1));
-        assertAlarmsEqual(alarm3, alarms.get(2));
+        assertEquals(alarm1, alarms.get(0));
+        assertEquals(alarm2, alarms.get(1));
+        assertEquals(alarm3, alarms.get(2));
 
         alarmDataRepository.remove(id2);
 
         List<Alarm> currentAlarms = alarmDataRepository.all();
 
         assertEquals(2, currentAlarms.size());
-        assertAlarmsEqual(alarm1, currentAlarms.get(0));
-        assertAlarmsEqual(alarm3, currentAlarms.get(1));
+        assertEquals(alarm1, currentAlarms.get(0));
+        assertEquals(alarm3, currentAlarms.get(1));
     }
 
     @Test
@@ -112,14 +112,6 @@ public class AlarmDataRepositoryTest {
 
         assertEquals(id, fetchedAlarm.getId());
         assertEquals(1, alarmDataRepository.all().size());
-        assertAlarmsEqual(alarm, fetchedAlarm);
-    }
-
-    private void assertAlarmsEqual(Alarm expected, Alarm actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getIntent().getComponent(), actual.getIntent().getComponent());
-        assertEquals(expected.getPodcast().getRssFeedUrl(), actual.getPodcast().getRssFeedUrl());
-        assertEquals(expected.getHourOfDay(), actual.getHourOfDay());
-        assertEquals(expected.getMinute(), actual.getMinute());
+        assertEquals(alarm, fetchedAlarm);
     }
 }
