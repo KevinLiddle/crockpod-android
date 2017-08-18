@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.krevin.crockpod.UniqueIntId;
 import com.krevin.crockpod.alarm.Alarm;
 
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,27 +32,19 @@ class AlarmDataRepository {
                 .stream()
                 .map(e -> buildAlarm(e.getValue().toString()))
                 .filter(Objects::nonNull)
+                .sorted(Comparator.comparingInt(a -> a.getNextTriggerTime().getMinuteOfDay()))
                 .collect(Collectors.toList());
     }
 
-    Alarm get(int id) {
-        return buildAlarm(mAlarmSharedPrefs.getString(String.valueOf(id), ""));
-    }
-
-    int put(Alarm alarm) {
-        int id = alarm.getId() == null ? UniqueIntId.generate(mContext) : alarm.getId();
-        alarm.setId(id);
-
+    void add(Alarm alarm) {
         mAlarmSharedPrefs
                 .edit()
-                .putString(String.valueOf(id), alarm.getIntent().toUri(Intent.URI_INTENT_SCHEME))
+                .putString(String.valueOf(alarm.hashCode()), alarm.getIntent().toUri(Intent.URI_INTENT_SCHEME))
                 .apply();
-
-        return id;
     }
 
-    void remove(int id) {
-        mAlarmSharedPrefs.edit().remove(String.valueOf(id)).apply();
+    void remove(Alarm alarm) {
+        mAlarmSharedPrefs.edit().remove(String.valueOf(alarm.hashCode())).apply();
     }
 
     private Alarm buildAlarm(String intentUri) {

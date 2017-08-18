@@ -13,7 +13,6 @@ public class Alarm {
     static final String PODCAST_NAME_KEY = "podcast_name";
     static final String PODCAST_AUTHOR_KEY = "podcast_author";
     static final String PODCAST_LOGO_KEY = "podcast_logo";
-    static final String ALARM_ID_KEY = "alarm_id";
     static final String ALARM_HOUR_KEY = "alarm_hour";
     static final String ALARM_MINUTE_KEY = "alarm_minute";
 
@@ -22,7 +21,6 @@ public class Alarm {
     private Integer mHourOfDay;
     private Integer mMinute;
     private Context mContext;
-    private Integer mId;
 
     public Alarm(Context context, Intent intent) {
         mContext = context;
@@ -36,18 +34,8 @@ public class Alarm {
         mMinute = minute;
     }
 
-    public Integer getId() {
-        if (mId != null) {
-            return mId;
-        }
-        if (mIntent != null && mIntent.hasExtra(ALARM_ID_KEY)) {
-            return mIntent.getIntExtra(ALARM_ID_KEY, 0);
-        }
-        return null;
-    }
-
-    public void setId(int id) {
-        mId = id;
+    public int getId() {
+        return hashCode();
     }
 
     public Intent getIntent() {
@@ -88,6 +76,15 @@ public class Alarm {
     }
 
     @Override
+    public String toString() {
+        return "Alarm{id=" + getId() +
+                ",hourOfDay=" + getHourOfDay() +
+                ",minuteOfHour=" + getMinute() +
+                ",podcast=" + getPodcast().toString() +
+                "}";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -100,9 +97,7 @@ public class Alarm {
             return false;
         if (getHourOfDay() != alarm.getHourOfDay())
             return false;
-        if (getMinute() != alarm.getMinute())
-            return false;
-        return getId() != null ? getId().equals(alarm.getId()) : alarm.getId() == null;
+        return getMinute() == alarm.getMinute();
 
     }
 
@@ -111,7 +106,6 @@ public class Alarm {
         int result = getPodcast() != null ? getPodcast().hashCode() : 0;
         result = 31 * result + getHourOfDay();
         result = 31 * result + getMinute();
-        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
         return result;
     }
 
@@ -125,7 +119,6 @@ public class Alarm {
 
     private Intent buildIntent() {
         Intent intent = AlarmReceiver.getIntent(mContext);
-        intent.putExtra(ALARM_ID_KEY, mId);
         intent.putExtra(ALARM_HOUR_KEY, mHourOfDay);
         intent.putExtra(ALARM_MINUTE_KEY, mMinute);
         intent.putExtra(PODCAST_NAME_KEY, mPodcast.getName());

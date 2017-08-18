@@ -1,6 +1,5 @@
 package com.krevin.crockpod.alarm.repositories;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.krevin.crockpod.BuildConfig;
@@ -10,8 +9,8 @@ import com.krevin.crockpod.podcast.Podcast;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
@@ -27,48 +26,35 @@ public class AlarmDataRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        context = Robolectric.buildActivity(Activity.class).get();
+        context = RuntimeEnvironment.application;
         alarmDataRepository = new AlarmDataRepository(context);
     }
 
     @Test
-    public void canPutAndGetAlarms() {
+    public void canPutAlarms() {
         Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
         Alarm alarm = new Alarm(context, podcast, 14, 33);
 
-        Integer id = alarmDataRepository.put(alarm);
-        Alarm fetchedAlarm = alarmDataRepository.get(id);
+        alarmDataRepository.add(alarm);
+        Alarm fetchedAlarm = alarmDataRepository.all().get(0);
 
-        assertEquals(id, fetchedAlarm.getId());
         assertEquals(alarm, fetchedAlarm);
     }
 
     @Test
-    public void putSetsIdOnAlarmIfNull() {
-        Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
-        Alarm alarm = new Alarm(context, podcast, 18, 7);
-
-        Integer id = alarmDataRepository.put(alarm);
-        Alarm fetchedAlarm = alarmDataRepository.get(id);
-
-        assertEquals(id, fetchedAlarm.getId());
-        assertEquals(alarm, fetchedAlarm);
-    }
-
-    @Test
-    public void allReturnsAllAddedAlarms() {
+    public void allReturnsAllAddedAlarmsInOrderOfTime() {
         Alarm alarm1 = new Alarm(context, new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art"), 9, 25);
         Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 8, 37);
         Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 50);
 
-        alarmDataRepository.put(alarm1);
-        alarmDataRepository.put(alarm2);
-        alarmDataRepository.put(alarm3);
+        alarmDataRepository.add(alarm1);
+        alarmDataRepository.add(alarm2);
+        alarmDataRepository.add(alarm3);
 
         List<Alarm> alarms = alarmDataRepository.all();
 
-        assertEquals(alarm1, alarms.get(0));
-        assertEquals(alarm2, alarms.get(1));
+        assertEquals(alarm2, alarms.get(0));
+        assertEquals(alarm1, alarms.get(1));
         assertEquals(alarm3, alarms.get(2));
     }
 
@@ -76,19 +62,19 @@ public class AlarmDataRepositoryTest {
     public void removeRemovesAlarmsFromRepoById() {
         Alarm alarm1 = new Alarm(context, new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art"), 4, 40);
         Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 3, 30);
-        Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 2, 20);
+        Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 20);
 
-        alarmDataRepository.put(alarm1);
-        int id2 = alarmDataRepository.put(alarm2);
-        alarmDataRepository.put(alarm3);
+        alarmDataRepository.add(alarm1);
+        alarmDataRepository.add(alarm2);
+        alarmDataRepository.add(alarm3);
 
         List<Alarm> alarms = alarmDataRepository.all();
 
-        assertEquals(alarm1, alarms.get(0));
-        assertEquals(alarm2, alarms.get(1));
+        assertEquals(alarm2, alarms.get(0));
+        assertEquals(alarm1, alarms.get(1));
         assertEquals(alarm3, alarms.get(2));
 
-        alarmDataRepository.remove(id2);
+        alarmDataRepository.remove(alarm2);
 
         List<Alarm> currentAlarms = alarmDataRepository.all();
 
@@ -98,20 +84,18 @@ public class AlarmDataRepositoryTest {
     }
 
     @Test
-    public void putReplacesAnAlarmById() {
+    public void addDoesNotAddDuplicateAlarms() {
         Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
         Alarm alarm = new Alarm(context, podcast, 14, 33);
 
-        Integer id = alarmDataRepository.put(alarm);
+        alarmDataRepository.add(alarm);
+        alarmDataRepository.add(alarm);
 
-        alarm.setHourOfDay(15);
-        alarm.setMinute(44);
-        alarmDataRepository.put(alarm);
-
-        Alarm fetchedAlarm = alarmDataRepository.get(id);
-
-        assertEquals(id, fetchedAlarm.getId());
         assertEquals(1, alarmDataRepository.all().size());
-        assertEquals(alarm, fetchedAlarm);
+
+        alarm.setHourOfDay(20);
+        alarmDataRepository.add(alarm);
+
+        assertEquals(2, alarmDataRepository.all().size());
     }
 }

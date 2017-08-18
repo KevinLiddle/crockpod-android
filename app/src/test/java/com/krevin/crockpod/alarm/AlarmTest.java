@@ -38,7 +38,6 @@ public class AlarmTest {
         intent.putExtra(Alarm.PODCAST_LOGO_KEY, "logo");
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
-        intent.putExtra(Alarm.ALARM_ID_KEY, 99);
         Alarm alarm = new Alarm(context, intent);
 
         assertEquals("feed", alarm.getPodcast().getRssFeedUrl());
@@ -47,7 +46,7 @@ public class AlarmTest {
         assertEquals("logo", alarm.getPodcast().getLogoUrl());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
-        assertEquals(99, alarm.getId().intValue());
+        assertEquals(alarm.hashCode(), alarm.getId());
         assertEquals(intent, alarm.getIntent());
     }
 
@@ -56,16 +55,13 @@ public class AlarmTest {
         Podcast podcast = new Podcast("name", "feed", "author", "logo");
         Alarm alarm = new Alarm(context, podcast, 12, 34);
 
-        assertNull(alarm.getId());
         assertEquals("feed", alarm.getPodcast().getRssFeedUrl());
         assertEquals("name", alarm.getPodcast().getName());
         assertEquals("author", alarm.getPodcast().getAuthor());
         assertEquals("logo", alarm.getPodcast().getLogoUrl());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
-
-        alarm.setId(99);
-        assertEquals(99, alarm.getId().intValue());
+        assertEquals(alarm.hashCode(), alarm.getId());
 
         Intent intent = AlarmReceiver.getIntent(context);
         intent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");
@@ -74,7 +70,6 @@ public class AlarmTest {
         intent.putExtra(Alarm.PODCAST_LOGO_KEY, "logo");
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
-        intent.putExtra(Alarm.ALARM_ID_KEY, 99);
 
         assertTrue(intent.filterEquals(alarm.getIntent()));
     }

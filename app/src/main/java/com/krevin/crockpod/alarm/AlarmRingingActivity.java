@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.krevin.crockpod.R;
-import com.krevin.crockpod.UniqueIntId;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
 import com.pkmmte.pkrss.PkRSS;
@@ -47,8 +46,9 @@ public class AlarmRingingActivity extends Activity implements Callback {
             startActivity(AlarmListActivity.getIntent(this));
         });
 
-        showAlarmNotification();
-        requestRssFeedAsync();
+        Alarm alarm = new Alarm(this, getIntent());
+        showAlarmNotification(alarm);
+        requestRssFeedAsync(alarm);
     }
 
     @Override
@@ -65,8 +65,7 @@ public class AlarmRingingActivity extends Activity implements Callback {
         Log.e(TAG, "OOPS! Couldn't fetch the RSS feed!");
     }
 
-    private void requestRssFeedAsync() {
-        Alarm alarm = new Alarm(this, getIntent());
+    private void requestRssFeedAsync(Alarm alarm) {
         Log.d(TAG, alarm.getIntent().getExtras().toString());
 
         PkRSS.with(this)
@@ -89,7 +88,7 @@ public class AlarmRingingActivity extends Activity implements Callback {
         mMediaPlayer.setOnPreparedListener(mp -> mMediaPlayer.start());
     }
 
-    private void showAlarmNotification() {
+    private void showAlarmNotification(Alarm alarm) {
         Notification.Builder builder = new Notification.Builder(this);
 
         builder.setPriority(Notification.PRIORITY_MAX).
@@ -99,6 +98,6 @@ public class AlarmRingingActivity extends Activity implements Callback {
                 setStyle(new Notification.BigTextStyle().bigText(getString(R.string.alarm_notification_text)));
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(UniqueIntId.generate(this), builder.build());
+        mNotificationManager.notify(alarm.hashCode(), builder.build());
     }
 }

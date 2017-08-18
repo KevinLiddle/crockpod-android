@@ -10,7 +10,6 @@ import com.krevin.crockpod.podcast.Podcast;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -32,7 +31,6 @@ public class AlarmReceiverTest {
         context = RuntimeEnvironment.application.getApplicationContext();
         Podcast podcast = new Podcast("pname", "pfeed", "pauthor", "plogo");
         alarm = new Alarm(context, podcast, 12, 21);
-        alarm.setId(33);
         alarmReceiver = new AlarmReceiver();
     }
 

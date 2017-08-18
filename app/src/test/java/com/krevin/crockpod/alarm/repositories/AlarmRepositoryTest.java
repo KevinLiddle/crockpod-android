@@ -43,12 +43,12 @@ public class AlarmRepositoryTest {
 
         Alarm dataRepoAlarm = new Alarm(null, mock(Intent.class));
         Alarm serviceRepoAlarm = new Alarm(null, mock(Intent.class));
-        when(dataRepo.put(any())).then(args -> {
+        doAnswer(args -> {
             Alarm a = args.getArgument(0);
             dataRepoAlarm.setHourOfDay(a.getHourOfDay());
             dataRepoAlarm.setMinute(a.getMinute());
-            return 0;
-        });
+            return null;
+        }).when(dataRepo).add(any());
         doAnswer(args -> {
             Alarm a = args.getArgument(0);
             serviceRepoAlarm.setHourOfDay(a.getHourOfDay());
@@ -77,7 +77,7 @@ public class AlarmRepositoryTest {
         repo.cancel(alarm);
 
         verify(serviceRepo).cancel(alarm);
-        verify(dataRepo).remove(alarm.getId());
+        verify(dataRepo).remove(alarm);
     }
 
     @Test

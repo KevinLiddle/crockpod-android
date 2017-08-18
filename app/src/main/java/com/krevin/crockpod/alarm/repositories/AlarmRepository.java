@@ -28,13 +28,13 @@ public class AlarmRepository {
         alarm.setHourOfDay(nextTriggerTime.getHourOfDay());
         alarm.setMinute(nextTriggerTime.getMinuteOfHour());
 
-        mDataRepository.put(alarm);
+        mDataRepository.add(alarm);
         mServiceRepository.set(alarm);
     }
 
     public void cancel(Alarm alarm) {
         mServiceRepository.cancel(alarm);
-        mDataRepository.remove(alarm.getId());
+        mDataRepository.remove(alarm);
     }
 
     public List<Alarm> list() {
