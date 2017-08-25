@@ -1,6 +1,5 @@
 package com.krevin.crockpod.alarm;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,13 +10,14 @@ import android.widget.Button;
 import android.widget.TimePicker;
 
 import com.krevin.crockpod.AutoCompleteSearchView;
+import com.krevin.crockpod.CrockpodActivity;
 import com.krevin.crockpod.HttpClient;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 import com.krevin.crockpod.podcast.Podcast;
 import com.krevin.crockpod.podcast.PodcastSearch;
 
-public class SetAlarmActivity extends Activity {
+public class SetAlarmActivity extends CrockpodActivity {
 
     private Podcast mPodcast;
 
@@ -33,7 +33,7 @@ public class SetAlarmActivity extends Activity {
         final TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
         final AutoCompleteSearchView<Podcast> podcastSearchField = (AutoCompleteSearchView<Podcast>) findViewById(R.id.podcast_rss_feed);
 
-        HttpClient httpClient = HttpClient.getInstance(getApplicationContext());
+        HttpClient httpClient = getCrockpodApp().getHttpClient();
         PodcastArrayAdapter podcastArrayAdapter = new PodcastArrayAdapter(this, httpClient.getImageLoader());
         PodcastSearch podcastSearch = new PodcastSearch(httpClient);
 

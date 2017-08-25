@@ -43,6 +43,7 @@ public class AlarmRingingActivity extends Activity implements Callback {
                 mMediaPlayer.release();
                 mMediaPlayer = null;
             }
+            finish();
             startActivity(AlarmListActivity.getIntent(this));
         });
 
