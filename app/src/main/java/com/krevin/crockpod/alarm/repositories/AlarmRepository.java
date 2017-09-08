@@ -24,10 +24,6 @@ public class AlarmRepository {
     }
 
     public void set(Alarm alarm) {
-        DateTime nextTriggerTime = alarm.getNextTriggerTime();
-        alarm.setHourOfDay(nextTriggerTime.getHourOfDay());
-        alarm.setMinute(nextTriggerTime.getMinuteOfHour());
-
         mDataRepository.add(alarm);
         mServiceRepository.set(alarm);
     }

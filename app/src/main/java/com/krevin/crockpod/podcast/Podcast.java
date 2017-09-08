@@ -52,13 +52,4 @@ public class Podcast {
         return mLogoUrl != null ? mLogoUrl.equals(podcast.mLogoUrl) : podcast.mLogoUrl == null;
 
     }
-
-    @Override
-    public int hashCode() {
-        int result = mName != null ? mName.hashCode() : 0;
-        result = 31 * result + (mRssFeedUrl != null ? mRssFeedUrl.hashCode() : 0);
-        result = 31 * result + (mAuthor != null ? mAuthor.hashCode() : 0);
-        result = 31 * result + (mLogoUrl != null ? mLogoUrl.hashCode() : 0);
-        return result;
-    }
 }

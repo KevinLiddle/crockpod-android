@@ -17,11 +17,9 @@ class AlarmDataRepository {
 
     private static final String REPO_KEY = AlarmDataRepository.class.getCanonicalName();
 
-    private Context mContext;
     private SharedPreferences mAlarmSharedPrefs;
 
     AlarmDataRepository(Context context) {
-        this.mContext = context;
         this.mAlarmSharedPrefs = context.getSharedPreferences(REPO_KEY, Context.MODE_PRIVATE);
     }
 
@@ -39,17 +37,17 @@ class AlarmDataRepository {
     void add(Alarm alarm) {
         mAlarmSharedPrefs
                 .edit()
-                .putString(String.valueOf(alarm.hashCode()), alarm.getIntent().toUri(Intent.URI_INTENT_SCHEME))
+                .putString(alarm.getId().toString(), alarm.getIntent().toUri(Intent.URI_INTENT_SCHEME))
                 .apply();
     }
 
     void remove(Alarm alarm) {
-        mAlarmSharedPrefs.edit().remove(String.valueOf(alarm.hashCode())).apply();
+        mAlarmSharedPrefs.edit().remove(alarm.getId().toString()).apply();
     }
 
     private Alarm buildAlarm(String intentUri) {
         try {
-            return new Alarm(mContext, parseIntentUri(intentUri));
+            return Alarm.fromIntent(parseIntentUri(intentUri));
         } catch (URISyntaxException e) {
             Log.e(REPO_KEY, "Error parsing Intent URI: " + intentUri);
             return null;

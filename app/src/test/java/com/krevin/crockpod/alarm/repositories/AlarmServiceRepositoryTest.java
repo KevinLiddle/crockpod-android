@@ -31,7 +31,6 @@ public class AlarmServiceRepositoryTest {
     private AlarmServiceRepository repo;
     private DateTime triggerTime;
     private Alarm alarm;
-    private int alarmId;
     private Intent intent;
 
     @Before
@@ -42,12 +41,10 @@ public class AlarmServiceRepositoryTest {
         repo = new AlarmServiceRepository(context);
 
         alarm = mock(Alarm.class);
-        alarmId = 72;
         intent = new Intent();
         triggerTime = DateTime.now();
 
         when(alarm.getNextTriggerTime()).thenReturn(triggerTime);
-        when(alarm.getId()).thenReturn(alarmId);
         when(alarm.getIntent()).thenReturn(intent);
     }
 
@@ -59,7 +56,6 @@ public class AlarmServiceRepositoryTest {
         ShadowPendingIntent shadowPendingIntent = shadowOf(nextAlarm.operation);
 
         assertEquals(triggerTime.getMillis(), nextAlarm.triggerAtTime);
-        assertEquals(alarmId, shadowPendingIntent.getRequestCode());
         assertEquals(intent, shadowPendingIntent.getSavedIntent());
         assertEquals(PendingIntent.FLAG_UPDATE_CURRENT, shadowPendingIntent.getFlags());
     }

@@ -18,7 +18,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         alarmListIntent.putExtras(intent);
         alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);
 
-        new AlarmRepository(context).set(new Alarm(context, intent));
+        new AlarmRepository(context).set(Alarm.fromIntent(intent));
 
         context.startActivity(alarmListIntent);
     }

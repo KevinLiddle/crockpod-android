@@ -14,8 +14,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
@@ -23,45 +25,48 @@ import static org.junit.Assert.assertTrue;
 public class AlarmTest {
 
     private Context context;
+    private Podcast podcast;
 
     @Before
     public void setUp() {
         context = RuntimeEnvironment.application.getApplicationContext();
+        podcast = new Podcast("name", "feed", "author", "logo");
     }
 
     @Test
     public void creatingAlarmWithIntentGetsDataFromIntent() {
+        UUID alarmId = UUID.randomUUID();
         Intent intent = new Intent();
-        intent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");
-        intent.putExtra(Alarm.PODCAST_NAME_KEY, "name");
-        intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, "author");
-        intent.putExtra(Alarm.PODCAST_LOGO_KEY, "logo");
+        intent.putExtra(Alarm.PODCAST_FEED_KEY, podcast.getRssFeedUrl());
+        intent.putExtra(Alarm.PODCAST_NAME_KEY, podcast.getName());
+        intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, podcast.getAuthor());
+        intent.putExtra(Alarm.PODCAST_LOGO_KEY, podcast.getLogoUrl());
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
-        Alarm alarm = new Alarm(context, intent);
+        intent.putExtra(Alarm.ALARM_ID_KEY, alarmId.toString());
+        Alarm alarm = Alarm.fromIntent(intent);
 
-        assertEquals("feed", alarm.getPodcast().getRssFeedUrl());
-        assertEquals("name", alarm.getPodcast().getName());
-        assertEquals("author", alarm.getPodcast().getAuthor());
-        assertEquals("logo", alarm.getPodcast().getLogoUrl());
+        assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
+        assertEquals(podcast.getName(), alarm.getPodcast().getName());
+        assertEquals(podcast.getAuthor(), alarm.getPodcast().getAuthor());
+        assertEquals(podcast.getLogoUrl(), alarm.getPodcast().getLogoUrl());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
-        assertEquals(alarm.hashCode(), alarm.getId());
+        assertEquals(alarmId, alarm.getId());
         assertEquals(intent, alarm.getIntent());
     }
 
     @Test
     public void creatingAlarmWithPodcastGetsDataFromPodcast() {
-        Podcast podcast = new Podcast("name", "feed", "author", "logo");
         Alarm alarm = new Alarm(context, podcast, 12, 34);
 
-        assertEquals("feed", alarm.getPodcast().getRssFeedUrl());
-        assertEquals("name", alarm.getPodcast().getName());
-        assertEquals("author", alarm.getPodcast().getAuthor());
-        assertEquals("logo", alarm.getPodcast().getLogoUrl());
+        assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
+        assertEquals(podcast.getName(), alarm.getPodcast().getName());
+        assertEquals(podcast.getAuthor(), alarm.getPodcast().getAuthor());
+        assertEquals(podcast.getLogoUrl(), alarm.getPodcast().getLogoUrl());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
-        assertEquals(alarm.hashCode(), alarm.getId());
+        assertNotNull(alarm.getId());
 
         Intent intent = AlarmReceiver.getIntent(context);
         intent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");
@@ -75,31 +80,12 @@ public class AlarmTest {
     }
 
     @Test
-    public void canSetHourOfDayAndMinute() {
-        Podcast podcast = new Podcast("", "", "", "");
-        Alarm alarm = new Alarm(context, podcast, 12, 34);
-
-        assertEquals(12, alarm.getHourOfDay());
-        assertEquals(34, alarm.getMinute());
-        assertEquals(12, alarm.getIntent().getIntExtra(Alarm.ALARM_HOUR_KEY, 0));
-        assertEquals(34, alarm.getIntent().getIntExtra(Alarm.ALARM_MINUTE_KEY, 0));
-
-        alarm.setHourOfDay(13);
-        alarm.setMinute(45);
-
-        assertEquals(13, alarm.getHourOfDay());
-        assertEquals(45, alarm.getMinute());
-        assertEquals(13, alarm.getIntent().getIntExtra(Alarm.ALARM_HOUR_KEY, 0));
-        assertEquals(45, alarm.getIntent().getIntExtra(Alarm.ALARM_MINUTE_KEY, 0));
-    }
-
-    @Test
     public void getNextTriggerTimeReturnsTheNextDateTimeOfTheHourAndMinute() {
         DateTime now = DateTime.now();
         int hour = (now.getHourOfDay() + 1) % 24;
         int minute = (now.getMinuteOfHour() + 5) % 60;
 
-        Alarm alarm = new Alarm(context, null, hour, minute);
+        Alarm alarm = new Alarm(context, podcast, hour, minute);
 
         DateTime triggerTime = alarm.getNextTriggerTime();
 
@@ -115,7 +101,7 @@ public class AlarmTest {
         DateTime now = DateTime.now();
         DateTime before = new DateTime(now).minusHours(1).minusMinutes(5);
 
-        Alarm alarm = new Alarm(context, null, before.getHourOfDay(), before.getMinuteOfHour());
+        Alarm alarm = new Alarm(context, podcast, before.getHourOfDay(), before.getMinuteOfHour());
 
         DateTime triggerTime = alarm.getNextTriggerTime();
 

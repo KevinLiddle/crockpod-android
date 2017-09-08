@@ -24,6 +24,7 @@ import java.util.List;
 public class AlarmRingingActivity extends Activity implements Callback {
 
     private static final String TAG = AlarmRingingActivity.class.getCanonicalName();
+    private static final int ALARM_NOTIFICATION_ID = 33;
 
     private MediaPlayer mMediaPlayer;
 
@@ -47,9 +48,8 @@ public class AlarmRingingActivity extends Activity implements Callback {
             startActivity(AlarmListActivity.getIntent(this));
         });
 
-        Alarm alarm = new Alarm(this, getIntent());
-        showAlarmNotification(alarm);
-        requestRssFeedAsync(alarm);
+        showAlarmNotification();
+        requestRssFeedAsync(Alarm.fromIntent(getIntent()));
     }
 
     @Override
@@ -85,11 +85,12 @@ public class AlarmRingingActivity extends Activity implements Callback {
             Log.e(TAG, String.format("Error playing media from URL: %s", mediaUrl));
         }
 
+        setAlarmToMaxVolume();
         mMediaPlayer.prepareAsync();
         mMediaPlayer.setOnPreparedListener(mp -> mMediaPlayer.start());
     }
 
-    private void showAlarmNotification(Alarm alarm) {
+    private void showAlarmNotification() {
         Notification.Builder builder = new Notification.Builder(this);
 
         builder.setPriority(Notification.PRIORITY_MAX).
@@ -99,6 +100,12 @@ public class AlarmRingingActivity extends Activity implements Callback {
                 setStyle(new Notification.BigTextStyle().bigText(getString(R.string.alarm_notification_text)));
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(alarm.hashCode(), builder.build());
+        mNotificationManager.notify(ALARM_NOTIFICATION_ID, builder.build());
+    }
+
+    private void setAlarmToMaxVolume() {
+        AudioManager systemService = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int streamMaxVolume = systemService.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+        systemService.setStreamVolume(AudioManager.STREAM_ALARM, streamMaxVolume, AudioManager.FLAG_SHOW_UI);
     }
 }

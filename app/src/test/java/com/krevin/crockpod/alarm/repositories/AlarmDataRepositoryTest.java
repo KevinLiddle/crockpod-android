@@ -92,10 +92,5 @@ public class AlarmDataRepositoryTest {
         alarmDataRepository.add(alarm);
 
         assertEquals(1, alarmDataRepository.all().size());
-
-        alarm.setHourOfDay(20);
-        alarmDataRepository.add(alarm);
-
-        assertEquals(2, alarmDataRepository.all().size());
     }
 }
