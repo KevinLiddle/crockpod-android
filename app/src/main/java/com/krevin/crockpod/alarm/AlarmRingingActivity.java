@@ -1,6 +1,5 @@
 package com.krevin.crockpod.alarm;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Button;
 
+import com.krevin.crockpod.CrockpodActivity;
 import com.krevin.crockpod.R;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class AlarmRingingActivity extends Activity implements Callback {
+public class AlarmRingingActivity extends CrockpodActivity implements Callback {
 
     private static final String TAG = AlarmRingingActivity.class.getCanonicalName();
     private static final int ALARM_NOTIFICATION_ID = 33;
@@ -49,7 +49,7 @@ public class AlarmRingingActivity extends Activity implements Callback {
         });
 
         showAlarmNotification();
-        requestRssFeedAsync(Alarm.fromIntent(getIntent()));
+        requestRssFeedAsync(new Alarm(getIntent()));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class AlarmRingingActivity extends Activity implements Callback {
         builder.setPriority(Notification.PRIORITY_MAX).
                 setCategory(Notification.CATEGORY_ALARM).
                 setContentTitle(getString(R.string.app_name)).
-                setSmallIcon(R.drawable.ic_crockpod_logo).
+                setSmallIcon(R.drawable.ic_crockpod_mascot).
                 setStyle(new Notification.BigTextStyle().bigText(getString(R.string.alarm_notification_text)));
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

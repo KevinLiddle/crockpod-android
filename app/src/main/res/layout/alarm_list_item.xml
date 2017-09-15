@@ -7,6 +7,16 @@
                 android:orientation="horizontal"
                 android:padding="10dp">
 
+    <!--<ToggleButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:src="@drawable/ic_delete"-->
+        <!--android:textColor="@color/colorPrimaryDark"-->
+        <!--android:textAppearance=""/>-->
+
     <ImageButton
         android:id="@+id/delete_alarm_button"
         android:layout_width="wrap_content"

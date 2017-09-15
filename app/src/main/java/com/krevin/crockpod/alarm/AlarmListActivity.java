@@ -1,6 +1,5 @@
 package com.krevin.crockpod.alarm;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.krevin.crockpod.CrockpodActivity;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 
@@ -21,7 +21,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.util.List;
 
-public class AlarmListActivity extends Activity {
+public class AlarmListActivity extends CrockpodActivity {
 
     private static final String CLOCK_FORMAT = "h:mma";
 

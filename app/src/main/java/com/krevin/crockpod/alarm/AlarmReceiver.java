@@ -3,6 +3,7 @@ package com.krevin.crockpod.alarm;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 
@@ -18,7 +19,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         alarmListIntent.putExtras(intent);
         alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);
 
-        new AlarmRepository(context).set(Alarm.fromIntent(intent));
+        Log.d("WATWAT", "receiving alarm");
+        Alarm alarm = new Alarm(intent);
+        new AlarmRepository(context).set(new Alarm(intent, alarm.getNextTriggerTime().getHourOfDay(), alarm.getNextTriggerTime().getMinuteOfHour()));
 
         context.startActivity(alarmListIntent);
     }

@@ -47,7 +47,7 @@ class AlarmDataRepository {
 
     private Alarm buildAlarm(String intentUri) {
         try {
-            return Alarm.fromIntent(parseIntentUri(intentUri));
+            return new Alarm(parseIntentUri(intentUri));
         } catch (URISyntaxException e) {
             Log.e(REPO_KEY, "Error parsing Intent URI: " + intentUri);
             return null;

@@ -17,6 +17,7 @@ import org.robolectric.annotation.Config;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,7 +45,7 @@ public class AlarmTest {
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
         intent.putExtra(Alarm.ALARM_ID_KEY, alarmId.toString());
-        Alarm alarm = Alarm.fromIntent(intent);
+        Alarm alarm = new Alarm(intent);
 
         assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
         assertEquals(podcast.getName(), alarm.getPodcast().getName());
@@ -109,5 +110,4 @@ public class AlarmTest {
         assertEquals(before.getMinuteOfHour(), triggerTime.getMinuteOfHour());
         assertTrue(triggerTime.isAfter(now));
     }
-
 }

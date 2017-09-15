@@ -33,7 +33,7 @@ public class Alarm {
         mMinute = minute;
     }
 
-    private Alarm(Intent intent) {
+    public Alarm(Intent intent) {
         mIntent = intent;
         mId = UUID.fromString(intent.getStringExtra(ALARM_ID_KEY));
         mHourOfDay = intent.getIntExtra(ALARM_HOUR_KEY, 0);
@@ -41,8 +41,12 @@ public class Alarm {
         mPodcast = buildPodcast(intent);
     }
 
-    public static Alarm fromIntent(Intent intent) {
-        return new Alarm(intent);
+    public Alarm(Intent intent, int hour, int minute) {
+        mIntent = intent;
+        mId = UUID.fromString(intent.getStringExtra(ALARM_ID_KEY));
+        mHourOfDay = hour;
+        mMinute = minute;
+        mPodcast = buildPodcast(intent);
     }
 
     public UUID getId() {
@@ -73,7 +77,7 @@ public class Alarm {
                 .withSecondOfMinute(0)
                 .withMillisOfSecond(0);
 
-        return target.isAfter(now) ? target : target.plusDays(1);
+        return target.isBefore(now) ? target.plusMinutes(1) : target; //target.plusDays(1);
     }
 
     @Override
