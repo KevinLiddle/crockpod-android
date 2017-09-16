@@ -21,7 +21,9 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="25dp"
             android:backgroundTint="@color/colorAccent"
-            android:src="@drawable/ic_crockpod_mascot"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_crockpod_mascot"
+            android:tint="@color/offWhite"/>
     </RelativeLayout>
 
 </FrameLayout>

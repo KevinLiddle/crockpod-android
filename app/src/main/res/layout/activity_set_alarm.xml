@@ -28,23 +28,19 @@
         android:background="@color/lightGrey"
         android:hint="@string/podcast_search_hint"
         android:padding="8sp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
         android:textColorHint="@color/offWhite"
         android:textSize="23sp"/>
 
     <RelativeLayout
+        android:id="@+id/selected_podcast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:orientation="horizontal"
-        android:visibility="invisible">
-
-        <ImageView
-            android:id="@+id/selected_podcast_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_crockpod_mascot"/>
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/unselect_podcast_button"
@@ -61,8 +57,8 @@
             android:id="@+id/selected_podcast_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/selected_podcast_logo"
             android:layout_toStartOf="@id/unselect_podcast_button"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:ellipsize="end"
             android:hint="Selected Podcast that is super cool"

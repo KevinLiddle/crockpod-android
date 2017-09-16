@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.krevin.crockpod.AutoCompleteSearchView;
@@ -32,6 +33,7 @@ public class SetAlarmActivity extends CrockpodActivity {
 
         final TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
         final AutoCompleteSearchView<Podcast> podcastSearchField = (AutoCompleteSearchView<Podcast>) findViewById(R.id.podcast_rss_feed);
+        final View selectedPodcast = findViewById(R.id.selected_podcast);
 
         HttpClient httpClient = getCrockpodApp().getHttpClient();
         PodcastArrayAdapter podcastArrayAdapter = new PodcastArrayAdapter(this, httpClient.getImageLoader());
@@ -43,6 +45,12 @@ public class SetAlarmActivity extends CrockpodActivity {
                 timePicker.setVisibility(View.GONE);
             } else {
                 timePicker.setVisibility(View.VISIBLE);
+                if (mPodcast != null) {
+                    podcastSearchField.setVisibility(View.GONE);
+                    selectedPodcast.setVisibility(View.VISIBLE);
+                    TextView podcastTitle = (TextView) selectedPodcast.findViewById(R.id.selected_podcast_title);
+                    podcastTitle.setText(mPodcast.getName());
+                }
                 closeKeyboard(v);
             }
         });
@@ -52,6 +60,12 @@ public class SetAlarmActivity extends CrockpodActivity {
             mPodcast = podcast;
             podcastSearchField.setText(podcast.getName());
             podcastSearchField.clearFocus();
+        });
+
+        selectedPodcast.findViewById(R.id.unselect_podcast_button).setOnClickListener(v -> {
+            mPodcast = null;
+            selectedPodcast.setVisibility(View.GONE);
+            podcastSearchField.setVisibility(View.VISIBLE);
         });
 
         Button setAlarmButton = (Button) findViewById(R.id.set_alarm);
