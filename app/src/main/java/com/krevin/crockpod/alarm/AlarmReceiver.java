@@ -15,14 +15,14 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent alarmListIntent = AlarmRingingActivity.getIntent(context);
-        alarmListIntent.putExtras(intent);
-        alarmListIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);
+        Intent alarmRingingIntent = AlarmRingingActivity.getIntent(context);
+        alarmRingingIntent.putExtras(intent);
+        alarmRingingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_FROM_BACKGROUND);
 
-        Log.d("WATWAT", "receiving alarm");
-        Alarm alarm = new Alarm(intent);
-        new AlarmRepository(context).set(new Alarm(intent, alarm.getNextTriggerTime().getHourOfDay(), alarm.getNextTriggerTime().getMinuteOfHour()));
+        new AlarmRepository(context).set(Alarm.buildNextAlarm(intent));
 
-        context.startActivity(alarmListIntent);
+        context.startActivity(alarmRingingIntent);
     }
 }

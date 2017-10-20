@@ -46,6 +46,7 @@ public class SetAlarmActivity extends CrockpodActivity {
             } else {
                 timePicker.setVisibility(View.VISIBLE);
                 if (mPodcast != null) {
+                    podcastSearchField.setText("");
                     podcastSearchField.setVisibility(View.GONE);
                     selectedPodcast.setVisibility(View.VISIBLE);
                     TextView podcastTitle = (TextView) selectedPodcast.findViewById(R.id.selected_podcast_title);
@@ -58,7 +59,6 @@ public class SetAlarmActivity extends CrockpodActivity {
         podcastSearchField.setOnItemClickListener((parent, view, position, id) -> {
             Podcast podcast = (Podcast) parent.getItemAtPosition(position);
             mPodcast = podcast;
-            podcastSearchField.setText(podcast.getName());
             podcastSearchField.clearFocus();
         });
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.krevin.crockpod.podcast.Podcast;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import java.util.UUID;
 
@@ -18,6 +19,9 @@ public class Alarm {
     static final String PODCAST_NAME_KEY = "podcast_name";
     static final String PODCAST_AUTHOR_KEY = "podcast_author";
     static final String PODCAST_LOGO_KEY = "podcast_logo";
+
+//    private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
+    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
 
     private final UUID mId;
     private final Intent mIntent;
@@ -49,6 +53,13 @@ public class Alarm {
         mPodcast = buildPodcast(intent);
     }
 
+    public static Alarm buildNextAlarm(Intent intent) {
+        Alarm currentAlarm = new Alarm(intent);
+        intent.putExtra(ALARM_HOUR_KEY, currentAlarm.getNextTriggerTime().getHourOfDay());
+        intent.putExtra(ALARM_MINUTE_KEY, currentAlarm.getNextTriggerTime().getMinuteOfHour());
+        return new Alarm(intent);
+    }
+
     public UUID getId() {
         return mId;
     }
@@ -77,7 +88,7 @@ public class Alarm {
                 .withSecondOfMinute(0)
                 .withMillisOfSecond(0);
 
-        return target.isBefore(now) ? target.plusMinutes(1) : target; //target.plusDays(1);
+        return target.isBefore(now) ? target.plus(REPEAT_DURATION) : target;
     }
 
     @Override
