@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.krevin.crockpod.CrockpodActivity;
 import com.krevin.crockpod.R;
@@ -87,11 +88,13 @@ public class AlarmListActivity extends CrockpodActivity {
 
         private final TextView mAlarmTextView;
         private final ImageButton mDeleteAlarmButton;
+        private final ToggleButton mToggleAlarmButton;
 
         AlarmHolder(View itemView) {
             super(itemView);
             mAlarmTextView = (TextView) itemView.findViewById(R.id.alarm_text);
             mDeleteAlarmButton = (ImageButton) itemView.findViewById(R.id.delete_alarm_button);
+            mToggleAlarmButton = (ToggleButton) itemView.findViewById(R.id.toggle_alarm_button);
         }
 
         void bindAlarm(final Alarm alarm) {
@@ -102,6 +105,12 @@ public class AlarmListActivity extends CrockpodActivity {
             mDeleteAlarmButton.setOnClickListener(view -> {
                 mAlarmRepository.cancel(alarm);
                 refreshAlarmList();
+            });
+
+            mToggleAlarmButton.setChecked(alarm.isEnabled());
+            mToggleAlarmButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                alarm.toggle(isChecked);
+                mAlarmRepository.set(alarm);
             });
         }
     }

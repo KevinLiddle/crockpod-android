@@ -31,12 +31,12 @@ public class AlarmDataRepositoryTest {
     }
 
     @Test
-    public void canPutAlarms() {
+    public void canUpsertAndFindAlarms() {
         Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
         Alarm alarm = new Alarm(context, podcast, 14, 33);
 
-        alarmDataRepository.add(alarm);
-        Alarm fetchedAlarm = alarmDataRepository.all().get(0);
+        alarmDataRepository.upsert(alarm);
+        Alarm fetchedAlarm = alarmDataRepository.find(alarm.getId().toString());
 
         assertEquals(alarm, fetchedAlarm);
     }
@@ -47,9 +47,9 @@ public class AlarmDataRepositoryTest {
         Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 8, 37);
         Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 50);
 
-        alarmDataRepository.add(alarm1);
-        alarmDataRepository.add(alarm2);
-        alarmDataRepository.add(alarm3);
+        alarmDataRepository.upsert(alarm1);
+        alarmDataRepository.upsert(alarm2);
+        alarmDataRepository.upsert(alarm3);
 
         List<Alarm> alarms = alarmDataRepository.all();
 
@@ -64,9 +64,9 @@ public class AlarmDataRepositoryTest {
         Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 3, 30);
         Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 20);
 
-        alarmDataRepository.add(alarm1);
-        alarmDataRepository.add(alarm2);
-        alarmDataRepository.add(alarm3);
+        alarmDataRepository.upsert(alarm1);
+        alarmDataRepository.upsert(alarm2);
+        alarmDataRepository.upsert(alarm3);
 
         List<Alarm> alarms = alarmDataRepository.all();
 
@@ -88,8 +88,8 @@ public class AlarmDataRepositoryTest {
         Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
         Alarm alarm = new Alarm(context, podcast, 14, 33);
 
-        alarmDataRepository.add(alarm);
-        alarmDataRepository.add(alarm);
+        alarmDataRepository.upsert(alarm);
+        alarmDataRepository.upsert(alarm);
 
         assertEquals(1, alarmDataRepository.all().size());
     }

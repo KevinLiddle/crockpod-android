@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import com.krevin.crockpod.CrockpodActivity;
 import com.krevin.crockpod.R;
+import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
 import com.pkmmte.pkrss.PkRSS;
@@ -49,7 +50,9 @@ public class AlarmRingingActivity extends CrockpodActivity implements Callback {
         });
 
         showAlarmNotification();
-        requestRssFeedAsync(new Alarm(getIntent()));
+        String alarmId = getIntent().getStringExtra(Alarm.ALARM_ID_KEY);
+        Alarm alarm = new AlarmRepository(this).find(alarmId);
+        requestRssFeedAsync(alarm);
     }
 
     @Override

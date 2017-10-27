@@ -17,7 +17,7 @@ import org.robolectric.annotation.Config;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -55,6 +55,7 @@ public class AlarmTest {
         assertEquals(34, alarm.getMinute());
         assertEquals(alarmId, alarm.getId());
         assertEquals(intent, alarm.getIntent());
+        assertTrue(alarm.isEnabled());
     }
 
     @Test
@@ -68,6 +69,7 @@ public class AlarmTest {
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
         assertNotNull(alarm.getId());
+        assertTrue(alarm.isEnabled());
 
         Intent intent = AlarmReceiver.getIntent(context);
         intent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");

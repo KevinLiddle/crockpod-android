@@ -7,6 +7,7 @@ import android.content.Intent;
 
 import com.krevin.crockpod.BuildConfig;
 import com.krevin.crockpod.alarm.Alarm;
+import com.krevin.crockpod.alarm.AlarmReceiver;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import org.robolectric.shadows.ShadowAlarmManager;
 import org.robolectric.shadows.ShadowPendingIntent;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
@@ -31,21 +33,19 @@ public class AlarmServiceRepositoryTest {
     private AlarmServiceRepository repo;
     private DateTime triggerTime;
     private Alarm alarm;
-    private Intent intent;
+    private Context context;
 
     @Before
     public void setUp() {
-        Context context = RuntimeEnvironment.application.getApplicationContext();
+        context = RuntimeEnvironment.application.getApplicationContext();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         shadowAlarmManager = shadowOf(alarmManager);
         repo = new AlarmServiceRepository(context);
 
         alarm = mock(Alarm.class);
-        intent = new Intent();
         triggerTime = DateTime.now();
 
         when(alarm.getNextTriggerTime()).thenReturn(triggerTime);
-        when(alarm.getIntent()).thenReturn(intent);
     }
 
     @Test
@@ -55,8 +55,11 @@ public class AlarmServiceRepositoryTest {
         ShadowAlarmManager.ScheduledAlarm nextAlarm = shadowAlarmManager.getNextScheduledAlarm();
         ShadowPendingIntent shadowPendingIntent = shadowOf(nextAlarm.operation);
 
+        Intent expectedIntent = new Intent(context, AlarmReceiver.class);
+        expectedIntent.putExtra(Alarm.ALARM_ID_KEY, alarm.getId());
+
         assertEquals(triggerTime.getMillis(), nextAlarm.triggerAtTime);
-        assertEquals(intent, shadowPendingIntent.getSavedIntent());
+        assertTrue(expectedIntent.filterEquals(shadowPendingIntent.getSavedIntent()));
         assertEquals(PendingIntent.FLAG_UPDATE_CURRENT, shadowPendingIntent.getFlags());
     }
 

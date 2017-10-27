@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.krevin.crockpod.alarm.Alarm;
 
-import org.joda.time.DateTime;
-
 import java.util.List;
 
 public class AlarmRepository {
@@ -24,8 +22,12 @@ public class AlarmRepository {
     }
 
     public void set(Alarm alarm) {
-        mDataRepository.add(alarm);
-        mServiceRepository.set(alarm);
+        if (alarm.isEnabled()) {
+            mServiceRepository.set(alarm);
+        } else {
+            mServiceRepository.cancel(alarm);
+        }
+        mDataRepository.upsert(alarm);
     }
 
     public void cancel(Alarm alarm) {
@@ -35,5 +37,9 @@ public class AlarmRepository {
 
     public List<Alarm> list() {
         return mDataRepository.all();
+    }
+
+    public Alarm find(String id) {
+        return mDataRepository.find(id);
     }
 }

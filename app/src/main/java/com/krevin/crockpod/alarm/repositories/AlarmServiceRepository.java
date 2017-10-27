@@ -3,9 +3,10 @@ package com.krevin.crockpod.alarm.repositories;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 
 import com.krevin.crockpod.alarm.Alarm;
+import com.krevin.crockpod.alarm.AlarmReceiver;
 
 class AlarmServiceRepository {
 
@@ -31,10 +32,13 @@ class AlarmServiceRepository {
     }
 
     private PendingIntent buildPendingIntent(Alarm alarm) {
+        Intent intent = new Intent(mContext, AlarmReceiver.class)
+                .putExtra(Alarm.ALARM_ID_KEY, alarm.getId());
+
         return PendingIntent.getBroadcast(
                 mContext,
                 ALARM_REQUEST_CODE,
-                alarm.getIntent(),
+                intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
     }

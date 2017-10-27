@@ -12,22 +12,23 @@ import java.util.UUID;
 
 public class Alarm {
 
-    static final String ALARM_ID_KEY = "alarm_id";
-    static final String ALARM_HOUR_KEY = "alarm_hour";
-    static final String ALARM_MINUTE_KEY = "alarm_minute";
-    static final String PODCAST_FEED_KEY = "podcast_feed";
-    static final String PODCAST_NAME_KEY = "podcast_name";
-    static final String PODCAST_AUTHOR_KEY = "podcast_author";
-    static final String PODCAST_LOGO_KEY = "podcast_logo";
+    public static final String ALARM_ID_KEY = "alarm_id";
+    public static final String ALARM_HOUR_KEY = "alarm_hour";
+    public static final String ALARM_MINUTE_KEY = "alarm_minute";
+    public static final String PODCAST_FEED_KEY = "podcast_feed";
+    public static final String PODCAST_NAME_KEY = "podcast_name";
+    public static final String PODCAST_AUTHOR_KEY = "podcast_author";
+    public static final String PODCAST_LOGO_KEY = "podcast_logo";
 
-//    private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
-    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
+        private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
+//    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
 
     private final UUID mId;
     private final Intent mIntent;
     private final Podcast mPodcast;
     private final Integer mHourOfDay;
     private final Integer mMinute;
+    private boolean mEnabled = true;
 
     public Alarm(Context context, Podcast podcast, int hourOfDay, int minute) {
         mId = UUID.randomUUID();
@@ -42,14 +43,6 @@ public class Alarm {
         mId = UUID.fromString(intent.getStringExtra(ALARM_ID_KEY));
         mHourOfDay = intent.getIntExtra(ALARM_HOUR_KEY, 0);
         mMinute = intent.getIntExtra(ALARM_MINUTE_KEY, 0);
-        mPodcast = buildPodcast(intent);
-    }
-
-    public Alarm(Intent intent, int hour, int minute) {
-        mIntent = intent;
-        mId = UUID.fromString(intent.getStringExtra(ALARM_ID_KEY));
-        mHourOfDay = hour;
-        mMinute = minute;
         mPodcast = buildPodcast(intent);
     }
 
@@ -78,6 +71,14 @@ public class Alarm {
 
     public int getMinute() {
         return mMinute;
+    }
+
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
+    public void toggle(boolean enabled) {
+        mEnabled = enabled;
     }
 
     public DateTime getNextTriggerTime() {

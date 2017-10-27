@@ -25,6 +25,7 @@ public class AlarmReceiverTest {
     private Context context;
     private Alarm alarm;
     private AlarmReceiver alarmReceiver;
+    private AlarmRepository alarmRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -32,13 +33,15 @@ public class AlarmReceiverTest {
         Podcast podcast = new Podcast("pname", "pfeed", "pauthor", "plogo");
         alarm = new Alarm(context, podcast, 12, 21);
         alarmReceiver = new AlarmReceiver();
+        alarmRepository = new AlarmRepository(context);
+        alarmRepository.set(alarm);
     }
 
     @Test
     public void onReceiveResetsTheAlarm() {
         alarmReceiver.onReceive(context, alarm.getIntent());
 
-        Alarm resetAlarm = new AlarmRepository(context).list().get(0);
+        Alarm resetAlarm = alarmRepository.list().get(0);
         assertEquals(alarm, resetAlarm);
     }
 

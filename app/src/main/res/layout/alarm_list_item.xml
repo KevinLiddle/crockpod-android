@@ -7,17 +7,18 @@
                 android:orientation="horizontal"
                 android:padding="10dp">
 
-    <!--<ToggleButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:src="@drawable/ic_delete"-->
-        <!--android:textColor="@color/colorPrimaryDark"-->
-        <!--android:textAppearance=""/>-->
+    <ToggleButton
+        android:id="@+id/toggle_alarm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_delete"
+        android:textColor="@color/colorPrimaryDark"/>
 
     <ImageButton
+        android:visibility="gone"
         android:id="@+id/delete_alarm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +36,7 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
-        android:layout_toStartOf="@id/delete_alarm_button"
+        android:layout_toStartOf="@id/toggle_alarm_button"
         android:ellipsize="end"
         android:hint="7:00am - NPR Hourly News and other things that are super cool that idk about"
         android:maxLines="1"/>

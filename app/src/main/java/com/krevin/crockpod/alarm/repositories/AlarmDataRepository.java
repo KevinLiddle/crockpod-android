@@ -11,6 +11,8 @@ import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 class AlarmDataRepository {
@@ -23,6 +25,19 @@ class AlarmDataRepository {
         this.mAlarmSharedPrefs = context.getSharedPreferences(REPO_KEY, Context.MODE_PRIVATE);
     }
 
+    public Alarm find(String id) {
+        return Optional.ofNullable(mAlarmSharedPrefs.getString(id, null))
+                .map(this::buildAlarm)
+                .orElse(null);
+    }
+
+    void upsert(Alarm alarm) {
+        mAlarmSharedPrefs
+                .edit()
+                .putString(alarm.getId().toString(), alarm.getIntent().toUri(Intent.URI_INTENT_SCHEME))
+                .apply();
+    }
+
     List<Alarm> all() {
         return mAlarmSharedPrefs
                 .getAll()
@@ -32,13 +47,6 @@ class AlarmDataRepository {
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparingInt(a -> a.getNextTriggerTime().getMinuteOfDay()))
                 .collect(Collectors.toList());
-    }
-
-    void add(Alarm alarm) {
-        mAlarmSharedPrefs
-                .edit()
-                .putString(alarm.getId().toString(), alarm.getIntent().toUri(Intent.URI_INTENT_SCHEME))
-                .apply();
     }
 
     void remove(Alarm alarm) {
