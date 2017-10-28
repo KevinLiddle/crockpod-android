@@ -3,7 +3,6 @@ package com.krevin.crockpod.alarm;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 
@@ -15,14 +14,18 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String alarmId = intent.getStringExtra(Alarm.ALARM_ID_KEY);
+
+        AlarmRepository alarmRepository = new AlarmRepository(context.getApplicationContext());
+        Alarm alarm = alarmRepository.find(alarmId);
+        Intent intent1 = alarm.getIntent();
+        alarmRepository.set(Alarm.buildNextAlarm(intent1));
+
         Intent alarmRingingIntent = AlarmRingingActivity.getIntent(context);
-        alarmRingingIntent.putExtras(intent);
+        alarmRingingIntent.putExtras(alarm.getIntent());
         alarmRingingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_FROM_BACKGROUND);
-
-        new AlarmRepository(context).set(Alarm.buildNextAlarm(intent));
-
         context.startActivity(alarmRingingIntent);
     }
 }

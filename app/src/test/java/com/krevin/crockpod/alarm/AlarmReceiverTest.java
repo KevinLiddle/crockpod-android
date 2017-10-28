@@ -26,6 +26,7 @@ public class AlarmReceiverTest {
     private Alarm alarm;
     private AlarmReceiver alarmReceiver;
     private AlarmRepository alarmRepository;
+    private Intent intent;
 
     @Before
     public void setUp() throws Exception {
@@ -35,11 +36,13 @@ public class AlarmReceiverTest {
         alarmReceiver = new AlarmReceiver();
         alarmRepository = new AlarmRepository(context);
         alarmRepository.set(alarm);
+        intent = new Intent(context, AlarmReceiver.class)
+                .putExtra(Alarm.ALARM_ID_KEY, alarm.getId().toString());
     }
 
     @Test
     public void onReceiveResetsTheAlarm() {
-        alarmReceiver.onReceive(context, alarm.getIntent());
+        alarmReceiver.onReceive(context, intent);
 
         Alarm resetAlarm = alarmRepository.list().get(0);
         assertEquals(alarm, resetAlarm);
@@ -47,7 +50,7 @@ public class AlarmReceiverTest {
 
     @Test
     public void onReceiveStartsTheAlarmRingingActivityWithExtras() {
-        alarmReceiver.onReceive(context, alarm.getIntent());
+        alarmReceiver.onReceive(context, intent);
         ShadowApplication shadowApplication = shadowOf(RuntimeEnvironment.application);
         Intent nextActivity = shadowApplication.peekNextStartedActivity();
 
