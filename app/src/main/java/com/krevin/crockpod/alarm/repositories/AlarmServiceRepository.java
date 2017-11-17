@@ -33,7 +33,7 @@ class AlarmServiceRepository {
 
     private PendingIntent buildPendingIntent(Alarm alarm) {
         Intent intent = new Intent(mContext, AlarmReceiver.class)
-                .putExtra(Alarm.ALARM_ID_KEY, alarm.getId());
+                .putExtra(Alarm.ALARM_ID_KEY, alarm.getId().toString());
 
         return PendingIntent.getBroadcast(
                 mContext,

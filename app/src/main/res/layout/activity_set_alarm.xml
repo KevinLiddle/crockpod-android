@@ -7,79 +7,91 @@
               android:layout_marginBottom="@dimen/activity_vertical_margin"
               android:layout_marginEnd="@dimen/activity_horizontal_margin"
               android:layout_marginStart="@dimen/activity_horizontal_margin"
-              android:layout_marginTop="@dimen/activity_vertical_margin"
               android:clickable="true"
               android:focusable="true"
               android:focusableInTouchMode="true"
               android:orientation="vertical"
               tools:context="com.krevin.crockpod.alarm.SetAlarmActivity">
 
-    <TimePicker
-        android:id="@+id/time_picker"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"/>
+        android:layout_height="match_parent">
 
-    <com.krevin.crockpod.AutoCompleteSearchView
-        android:id="@+id/podcast_rss_feed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/lightGrey"
-        android:hint="@string/podcast_search_hint"
-        android:padding="8sp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:scrollHorizontally="true"
-        android:textColorHint="@color/offWhite"
-        android:textSize="23sp"/>
-
-    <RelativeLayout
-        android:id="@+id/selected_podcast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <ImageButton
-            android:id="@+id/unselect_podcast_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:padding="10dp"
-            android:src="@drawable/ic_clear_black_24dp"
-            android:tint="@color/offWhite"/>
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/selected_podcast_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/unselect_podcast_button"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:hint="Selected Podcast that is super cool"
-            android:maxLines="1"
-            android:textSize="23sp"/>
-    </RelativeLayout>
+            <TimePicker
+                android:id="@+id/time_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="clock"
+                />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|center_vertical"
-        android:layout_margin="10dp">
+            <com.krevin.crockpod.AutoCompleteSearchView
+                android:id="@+id/podcast_rss_feed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/lightGrey"
+                android:ellipsize="end"
+                android:hint="@string/podcast_search_hint"
+                android:padding="8sp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColorHint="@color/offWhite"
+                android:textSize="23sp"/>
 
-        <Button
-            android:id="@+id/set_alarm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_vertical"
-            android:background="@drawable/positive_button"
-            android:text="@string/set_alarm"
-            android:textColor="@color/white"
-            android:textSize="20sp"/>
-    </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/selected_podcast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/unselect_podcast_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_clear_black_24dp"
+                    android:tint="@color/offWhite"/>
+
+                <TextView
+                    android:id="@+id/selected_podcast_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/unselect_podcast_button"
+                    android:ellipsize="end"
+                    android:hint="Selected Podcast that is super cool"
+                    android:maxLines="1"
+                    android:textSize="23sp"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom|center_vertical"
+                android:layout_margin="10dp">
+
+                <Button
+                    android:id="@+id/set_alarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_vertical"
+                    android:background="@drawable/positive_button"
+                    android:text="@string/set_alarm"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

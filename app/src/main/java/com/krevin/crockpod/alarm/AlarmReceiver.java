@@ -18,8 +18,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
         AlarmRepository alarmRepository = new AlarmRepository(context.getApplicationContext());
         Alarm alarm = alarmRepository.find(alarmId);
-        Intent intent1 = alarm.getIntent();
-        alarmRepository.set(Alarm.buildNextAlarm(intent1));
+        alarmRepository.set(alarm.buildNextAlarm());
 
         Intent alarmRingingIntent = AlarmRingingActivity.getIntent(context);
         alarmRingingIntent.putExtras(alarm.getIntent());

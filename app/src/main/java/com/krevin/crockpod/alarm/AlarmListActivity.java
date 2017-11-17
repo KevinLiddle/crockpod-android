@@ -108,10 +108,20 @@ public class AlarmListActivity extends CrockpodActivity {
             });
 
             mToggleAlarmButton.setChecked(alarm.isEnabled());
+            setToggleAlarmButtonOpacity();
             mToggleAlarmButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 alarm.toggle(isChecked);
+                setToggleAlarmButtonOpacity();
                 mAlarmRepository.set(alarm);
             });
+        }
+
+        void setToggleAlarmButtonOpacity() {
+            if (mToggleAlarmButton.isChecked()) {
+                mToggleAlarmButton.setAlpha(1.0f);
+            } else {
+                mToggleAlarmButton.setAlpha(0.2f);
+            }
         }
     }
 }

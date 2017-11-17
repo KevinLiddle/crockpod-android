@@ -37,7 +37,7 @@ public class AlarmTest {
     @Test
     public void creatingAlarmWithIntentGetsDataFromIntent() {
         UUID alarmId = UUID.randomUUID();
-        Intent intent = new Intent();
+        Intent intent = AlarmReceiver.getIntent(context);
         intent.putExtra(Alarm.PODCAST_FEED_KEY, podcast.getRssFeedUrl());
         intent.putExtra(Alarm.PODCAST_NAME_KEY, podcast.getName());
         intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, podcast.getAuthor());
@@ -45,7 +45,8 @@ public class AlarmTest {
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
         intent.putExtra(Alarm.ALARM_ID_KEY, alarmId.toString());
-        Alarm alarm = new Alarm(intent);
+        intent.putExtra(Alarm.ALARM_ENABLED_KEY, false);
+        Alarm alarm = new Alarm(context, intent);
 
         assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
         assertEquals(podcast.getName(), alarm.getPodcast().getName());
@@ -54,8 +55,9 @@ public class AlarmTest {
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
         assertEquals(alarmId, alarm.getId());
-        assertEquals(intent, alarm.getIntent());
-        assertTrue(alarm.isEnabled());
+        assertFalse(alarm.isEnabled());
+        assertTrue(intent.filterEquals(alarm.getIntent()));
+        assertEquals(intent.getExtras().toString(), alarm.getIntent().getExtras().toString());
     }
 
     @Test
@@ -76,9 +78,16 @@ public class AlarmTest {
         intent.putExtra(Alarm.PODCAST_NAME_KEY, "name");
         intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, "author");
         intent.putExtra(Alarm.PODCAST_LOGO_KEY, "logo");
+        intent.putExtra(Alarm.ALARM_ID_KEY, alarm.getId());
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
+        intent.putExtra(Alarm.ALARM_ENABLED_KEY, true);
 
+        assertTrue(intent.filterEquals(alarm.getIntent()));
+        assertEquals(intent.getExtras().toString(), alarm.getIntent().getExtras().toString());
+
+        alarm.toggle(false);
+        intent.putExtra(Alarm.ALARM_ENABLED_KEY, false);
         assertTrue(intent.filterEquals(alarm.getIntent()));
     }
 

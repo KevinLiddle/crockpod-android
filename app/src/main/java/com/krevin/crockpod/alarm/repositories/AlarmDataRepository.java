@@ -12,16 +12,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 class AlarmDataRepository {
 
     private static final String REPO_KEY = AlarmDataRepository.class.getCanonicalName();
 
-    private SharedPreferences mAlarmSharedPrefs;
+    private final Context mContext;
+    private final SharedPreferences mAlarmSharedPrefs;
 
     AlarmDataRepository(Context context) {
+        this.mContext = context;
         this.mAlarmSharedPrefs = context.getSharedPreferences(REPO_KEY, Context.MODE_PRIVATE);
     }
 
@@ -55,7 +56,7 @@ class AlarmDataRepository {
 
     private Alarm buildAlarm(String intentUri) {
         try {
-            return new Alarm(parseIntentUri(intentUri));
+            return new Alarm(mContext, parseIntentUri(intentUri));
         } catch (URISyntaxException e) {
             Log.e(REPO_KEY, "Error parsing Intent URI: " + intentUri);
             return null;

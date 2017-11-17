@@ -15,16 +15,17 @@ public class Alarm {
     public static final String ALARM_ID_KEY = "alarm_id";
     public static final String ALARM_HOUR_KEY = "alarm_hour";
     public static final String ALARM_MINUTE_KEY = "alarm_minute";
+    public static final String ALARM_ENABLED_KEY = "alarm_enabled";
     public static final String PODCAST_FEED_KEY = "podcast_feed";
     public static final String PODCAST_NAME_KEY = "podcast_name";
     public static final String PODCAST_AUTHOR_KEY = "podcast_author";
     public static final String PODCAST_LOGO_KEY = "podcast_logo";
 
-        private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
-//    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
+//    private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
+    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
 
     private final UUID mId;
-    private final Intent mIntent;
+    private final Context mContext;
     private final Podcast mPodcast;
     private final Integer mHourOfDay;
     private final Integer mMinute;
@@ -32,33 +33,40 @@ public class Alarm {
 
     public Alarm(Context context, Podcast podcast, int hourOfDay, int minute) {
         mId = UUID.randomUUID();
-        mIntent = buildIntent(mId, context, hourOfDay, minute, podcast);
+        mContext = context;
         mPodcast = podcast;
         mHourOfDay = hourOfDay;
         mMinute = minute;
     }
 
-    public Alarm(Intent intent) {
-        mIntent = intent;
+    public Alarm(Context context, Intent intent) {
+        mContext = context;
         mId = UUID.fromString(intent.getStringExtra(ALARM_ID_KEY));
         mHourOfDay = intent.getIntExtra(ALARM_HOUR_KEY, 0);
         mMinute = intent.getIntExtra(ALARM_MINUTE_KEY, 0);
         mPodcast = buildPodcast(intent);
-    }
-
-    public static Alarm buildNextAlarm(Intent intent) {
-        Alarm currentAlarm = new Alarm(intent);
-        intent.putExtra(ALARM_HOUR_KEY, currentAlarm.getNextTriggerTime().getHourOfDay());
-        intent.putExtra(ALARM_MINUTE_KEY, currentAlarm.getNextTriggerTime().getMinuteOfHour());
-        return new Alarm(intent);
+        mEnabled = intent.getBooleanExtra(ALARM_ENABLED_KEY, false);
     }
 
     public UUID getId() {
         return mId;
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     public Intent getIntent() {
-        return mIntent;
+        Intent intent = AlarmReceiver.getIntent(mContext);
+        intent.putExtra(ALARM_ID_KEY, mId.toString());
+        intent.putExtra(ALARM_HOUR_KEY, mHourOfDay);
+        intent.putExtra(ALARM_MINUTE_KEY, mMinute);
+        intent.putExtra(ALARM_ENABLED_KEY, mEnabled);
+        intent.putExtra(PODCAST_NAME_KEY, mPodcast.getName());
+        intent.putExtra(PODCAST_FEED_KEY, mPodcast.getRssFeedUrl());
+        intent.putExtra(PODCAST_AUTHOR_KEY, mPodcast.getAuthor());
+        intent.putExtra(PODCAST_LOGO_KEY, mPodcast.getLogoUrl());
+        return intent;
     }
 
     public Podcast getPodcast() {
@@ -79,6 +87,13 @@ public class Alarm {
 
     public void toggle(boolean enabled) {
         mEnabled = enabled;
+    }
+
+    public Alarm buildNextAlarm() {
+        Intent intent = (Intent) getIntent().clone();
+        intent.putExtra(ALARM_HOUR_KEY, getNextTriggerTime().getHourOfDay());
+        intent.putExtra(ALARM_MINUTE_KEY, getNextTriggerTime().getMinuteOfHour());
+        return new Alarm(getContext(), intent);
     }
 
     public DateTime getNextTriggerTime() {
@@ -124,17 +139,5 @@ public class Alarm {
                 intent.getStringExtra(PODCAST_FEED_KEY),
                 intent.getStringExtra(PODCAST_AUTHOR_KEY),
                 intent.getStringExtra(PODCAST_LOGO_KEY));
-    }
-
-    private Intent buildIntent(UUID id, Context context, int hourOfDay, int minute, Podcast podcast) {
-        Intent intent = AlarmReceiver.getIntent(context);
-        intent.putExtra(ALARM_ID_KEY, id.toString());
-        intent.putExtra(ALARM_HOUR_KEY, hourOfDay);
-        intent.putExtra(ALARM_MINUTE_KEY, minute);
-        intent.putExtra(PODCAST_NAME_KEY, podcast.getName());
-        intent.putExtra(PODCAST_FEED_KEY, podcast.getRssFeedUrl());
-        intent.putExtra(PODCAST_AUTHOR_KEY, podcast.getAuthor());
-        intent.putExtra(PODCAST_LOGO_KEY, podcast.getLogoUrl());
-        return intent;
     }
 }
