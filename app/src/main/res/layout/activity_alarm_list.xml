@@ -11,7 +11,9 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/alarm_list" />
+            android:id="@+id/alarm_list"
+            android:clipToPadding="false"
+            android:paddingBottom="95dp"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_alarm_button"
@@ -19,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="25dp"
+            android:layout_margin="20dp"
             android:backgroundTint="@color/colorAccent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_crockpod_mascot"
