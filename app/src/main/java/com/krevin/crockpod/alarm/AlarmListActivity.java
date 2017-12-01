@@ -7,10 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -56,7 +59,7 @@ public class AlarmListActivity extends CrockpodActivity {
     }
 
     private void refreshAlarmList() {
-        mAlarmList.swapAdapter(new AlarmListAdapter(mAlarmRepository.list()), true);
+        mAlarmList.setAdapter(new AlarmListAdapter(mAlarmRepository.list()));
     }
 
     private class AlarmListAdapter extends RecyclerView.Adapter<AlarmHolder> {
@@ -87,14 +90,20 @@ public class AlarmListActivity extends CrockpodActivity {
     private class AlarmHolder extends RecyclerView.ViewHolder {
 
         private final TextView mAlarmTextView;
-        private final ImageButton mDeleteAlarmButton;
+        private final LinearLayout mDeleteAlarmLayout;
+        private final Button mDeleteAlarmButton;
         private final ToggleButton mToggleAlarmButton;
+        private final ImageButton mExpandButton;
+        private final ImageButton mContractButton;
 
         AlarmHolder(View itemView) {
             super(itemView);
             mAlarmTextView = (TextView) itemView.findViewById(R.id.alarm_text);
-            mDeleteAlarmButton = (ImageButton) itemView.findViewById(R.id.delete_alarm_button);
+            mDeleteAlarmLayout = (LinearLayout) itemView.findViewById(R.id.delete_alarm_layout);
+            mDeleteAlarmButton = (Button) itemView.findViewById(R.id.delete_alarm_button);
             mToggleAlarmButton = (ToggleButton) itemView.findViewById(R.id.toggle_alarm_button);
+            mExpandButton = (ImageButton) itemView.findViewById(R.id.alarm_item_expand);
+            mContractButton = (ImageButton) itemView.findViewById(R.id.alarm_item_contract);
         }
 
         void bindAlarm(final Alarm alarm) {
@@ -113,6 +122,17 @@ public class AlarmListActivity extends CrockpodActivity {
                 alarm.toggle(isChecked);
                 setToggleAlarmButtonOpacity();
                 mAlarmRepository.set(alarm);
+            });
+
+            mExpandButton.setOnClickListener(buttonView -> {
+                mDeleteAlarmLayout.setVisibility(View.VISIBLE);
+                mExpandButton.setVisibility(View.GONE);
+                mContractButton.setVisibility(View.VISIBLE);
+            });
+            mContractButton.setOnClickListener(buttonView -> {
+                mDeleteAlarmLayout.setVisibility(View.GONE);
+                mExpandButton.setVisibility(View.VISIBLE);
+                mContractButton.setVisibility(View.GONE);
             });
         }
 

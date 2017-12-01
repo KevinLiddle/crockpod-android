@@ -18,7 +18,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical">
@@ -27,8 +27,7 @@
                 android:id="@+id/time_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:timePickerMode="clock"
-                />
+                android:timePickerMode="clock"/>
 
             <com.krevin.crockpod.AutoCompleteSearchView
                 android:id="@+id/podcast_rss_feed"
