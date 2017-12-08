@@ -24,7 +24,7 @@
             android:layout_margin="20dp"
             android:backgroundTint="@color/colorAccent"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_crockpod_mascot"
+            android:src="@drawable/ic_alarm_add_black_24dp"
             android:tint="@color/offWhite"/>
     </RelativeLayout>
 
