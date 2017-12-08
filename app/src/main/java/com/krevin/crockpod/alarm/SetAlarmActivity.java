@@ -31,8 +31,8 @@ public class SetAlarmActivity extends CrockpodActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm);
 
-        final TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
-        final AutoCompleteSearchView<Podcast> podcastSearchField = (AutoCompleteSearchView<Podcast>) findViewById(R.id.podcast_rss_feed);
+        final TimePicker timePicker = findViewById(R.id.time_picker);
+        final AutoCompleteSearchView<Podcast> podcastSearchField = findViewById(R.id.podcast_rss_feed);
         final View selectedPodcast = findViewById(R.id.selected_podcast);
 
         HttpClient httpClient = getCrockpodApp().getHttpClient();
@@ -49,7 +49,7 @@ public class SetAlarmActivity extends CrockpodActivity {
                     podcastSearchField.setText("");
                     podcastSearchField.setVisibility(View.GONE);
                     selectedPodcast.setVisibility(View.VISIBLE);
-                    TextView podcastTitle = (TextView) selectedPodcast.findViewById(R.id.selected_podcast_title);
+                    TextView podcastTitle = selectedPodcast.findViewById(R.id.selected_podcast_title);
                     podcastTitle.setText(mPodcast.getName());
                 }
                 closeKeyboard(v);
@@ -57,8 +57,7 @@ public class SetAlarmActivity extends CrockpodActivity {
         });
 
         podcastSearchField.setOnItemClickListener((parent, view, position, id) -> {
-            Podcast podcast = (Podcast) parent.getItemAtPosition(position);
-            mPodcast = podcast;
+            mPodcast = (Podcast) parent.getItemAtPosition(position);
             podcastSearchField.clearFocus();
         });
 
@@ -68,7 +67,7 @@ public class SetAlarmActivity extends CrockpodActivity {
             podcastSearchField.setVisibility(View.VISIBLE);
         });
 
-        Button setAlarmButton = (Button) findViewById(R.id.set_alarm);
+        Button setAlarmButton = findViewById(R.id.set_alarm);
         setAlarmButton.setOnClickListener(v -> {
             if (mPodcast != null) {
                 Alarm alarm = new Alarm(this, mPodcast, timePicker.getHour(), timePicker.getMinute());
@@ -80,7 +79,9 @@ public class SetAlarmActivity extends CrockpodActivity {
 
     private void closeKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
     }
 
 }

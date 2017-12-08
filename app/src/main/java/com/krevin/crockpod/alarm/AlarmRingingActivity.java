@@ -38,7 +38,7 @@ public class AlarmRingingActivity extends CrockpodActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_ringing);
 
-        Button cancelButton = (Button) findViewById(R.id.alarm_cancel);
+        Button cancelButton = findViewById(R.id.alarm_cancel);
         cancelButton.setOnClickListener(v -> {
             if (mMediaPlayer != null) {
                 mMediaPlayer.stop();

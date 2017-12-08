@@ -27,9 +27,9 @@ class PodcastArrayAdapter extends ArrayAdapter<Podcast> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = getView(convertView, parent);
-        TextView titleView = (TextView) view.findViewById(R.id.podcast_search_item_title);
-        TextView authorView = (TextView) view.findViewById(R.id.podcast_search_item_author);
-        NetworkImageView logoView = (NetworkImageView) view.findViewById(R.id.podcast_search_item_logo);
+        TextView titleView = view.findViewById(R.id.podcast_search_item_title);
+        TextView authorView = view.findViewById(R.id.podcast_search_item_author);
+        NetworkImageView logoView = view.findViewById(R.id.podcast_search_item_logo);
 
         if (position % 2 == 0) {
             view.setBackgroundColor(getContext().getResources().getColor(R.color.colorAlmostPrimary, null));

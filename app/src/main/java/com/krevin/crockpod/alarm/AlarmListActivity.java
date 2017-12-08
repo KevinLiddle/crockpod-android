@@ -44,10 +44,10 @@ public class AlarmListActivity extends CrockpodActivity {
 
         mAlarmRepository = new AlarmRepository(this);
 
-        FloatingActionButton mAddAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm_button);
+        FloatingActionButton mAddAlarmButton = findViewById(R.id.add_alarm_button);
         mAddAlarmButton.setOnClickListener(view -> startActivity(SetAlarmActivity.getIntent(AlarmListActivity.this)));
 
-        mAlarmList = (RecyclerView) findViewById(R.id.alarm_list);
+        mAlarmList = findViewById(R.id.alarm_list);
         mAlarmList.setHasFixedSize(true);
         mAlarmList.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -98,12 +98,12 @@ public class AlarmListActivity extends CrockpodActivity {
 
         AlarmHolder(View itemView) {
             super(itemView);
-            mAlarmTextView = (TextView) itemView.findViewById(R.id.alarm_text);
-            mDeleteAlarmLayout = (LinearLayout) itemView.findViewById(R.id.delete_alarm_layout);
-            mDeleteAlarmButton = (Button) itemView.findViewById(R.id.delete_alarm_button);
-            mToggleAlarmButton = (ToggleButton) itemView.findViewById(R.id.toggle_alarm_button);
-            mExpandButton = (ImageButton) itemView.findViewById(R.id.alarm_item_expand);
-            mContractButton = (ImageButton) itemView.findViewById(R.id.alarm_item_contract);
+            mAlarmTextView = itemView.findViewById(R.id.alarm_text);
+            mDeleteAlarmLayout = itemView.findViewById(R.id.delete_alarm_layout);
+            mDeleteAlarmButton = itemView.findViewById(R.id.delete_alarm_button);
+            mToggleAlarmButton = itemView.findViewById(R.id.toggle_alarm_button);
+            mExpandButton = itemView.findViewById(R.id.alarm_item_expand);
+            mContractButton = itemView.findViewById(R.id.alarm_item_contract);
         }
 
         void bindAlarm(final Alarm alarm) {
