@@ -10,8 +10,6 @@ import com.krevin.crockpod.alarm.AlarmReceiver;
 
 class AlarmServiceRepository {
 
-    private static final int ALARM_REQUEST_CODE = 72;
-
     private final Context mContext;
     private final AlarmManager mAlarmManager;
 
@@ -24,7 +22,8 @@ class AlarmServiceRepository {
         mAlarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 alarm.getNextTriggerTime().getMillis(),
-                buildPendingIntent(alarm));
+                buildPendingIntent(alarm)
+        );
     }
 
     void cancel(Alarm alarm) {
@@ -37,9 +36,9 @@ class AlarmServiceRepository {
 
         return PendingIntent.getBroadcast(
                 mContext,
-                ALARM_REQUEST_CODE,
+                alarm.getId().hashCode(),
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_ONE_SHOT
         );
     }
 }

@@ -63,7 +63,7 @@ public class AlarmServiceRepositoryTest {
 
         assertEquals(triggerTime.getMillis(), nextAlarm.triggerAtTime);
         assertTrue(expectedIntent.filterEquals(shadowPendingIntent.getSavedIntent()));
-        assertEquals(PendingIntent.FLAG_UPDATE_CURRENT, shadowPendingIntent.getFlags());
+        assertEquals(PendingIntent.FLAG_ONE_SHOT, shadowPendingIntent.getFlags());
     }
 
     @Test
@@ -73,5 +73,23 @@ public class AlarmServiceRepositoryTest {
 
         repo.cancel(alarm);
         assertEquals(0, shadowAlarmManager.getScheduledAlarms().size());
+    }
+
+    @Test
+    public void handlesMultipleAlarms() {
+        Alarm alarm2 = mock(Alarm.class);
+        when(alarm2.getId()).thenReturn(UUID.randomUUID());
+        when(alarm2.getNextTriggerTime()).thenReturn(DateTime.now());
+
+        repo.set(alarm);
+        repo.set(alarm2);
+        assertEquals(2, shadowAlarmManager.getScheduledAlarms().size());
+
+        repo.cancel(alarm);
+        assertEquals(1, shadowAlarmManager.getScheduledAlarms().size());
+        assertEquals(
+                alarm2.getNextTriggerTime().toInstant().getMillis(),
+                shadowAlarmManager.getScheduledAlarms().get(0).triggerAtTime
+        );
     }
 }

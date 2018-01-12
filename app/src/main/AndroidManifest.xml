@@ -4,19 +4,19 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
 
     <application
-    android:name=".CrockpodApp"
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
+        android:name=".CrockpodApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
         <activity
-        android:name=".alarm.AlarmListActivity"
-        android:launchMode="singleInstance">
+            android:name=".alarm.AlarmListActivity"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -24,9 +24,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".alarm.SetAlarmActivity"/>
-        <activity android:name=".alarm.AlarmRingingActivity"/>
+        <activity
+            android:name=".alarm.AlarmRingingActivity"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTop"/>
 
         <receiver android:name=".alarm.AlarmReceiver"/>
+
+        <service android:name=".MediaPlayerService"/>
     </application>
 
 </manifest>

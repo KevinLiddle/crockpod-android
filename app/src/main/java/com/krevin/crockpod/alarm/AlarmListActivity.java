@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.krevin.crockpod.CrockpodActivity;
-import com.krevin.crockpod.NotificationSetup;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 
@@ -34,7 +33,7 @@ public class AlarmListActivity extends CrockpodActivity {
 
     public static Intent getIntent(Context context) {
         return new Intent(context, AlarmListActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
     }
 
     @Override

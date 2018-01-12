@@ -23,7 +23,7 @@ public class SetAlarmActivity extends CrockpodActivity {
     private Podcast mPodcast;
 
     public static Intent getIntent(Context context) {
-        return new Intent(context, SetAlarmActivity.class);
+        return new Intent(context, SetAlarmActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @Override
