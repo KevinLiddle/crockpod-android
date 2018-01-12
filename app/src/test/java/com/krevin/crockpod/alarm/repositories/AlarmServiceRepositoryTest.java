@@ -19,6 +19,8 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlarmManager;
 import org.robolectric.shadows.ShadowPendingIntent;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -45,6 +47,7 @@ public class AlarmServiceRepositoryTest {
         alarm = mock(Alarm.class);
         triggerTime = DateTime.now();
 
+        when(alarm.getId()).thenReturn(UUID.randomUUID());
         when(alarm.getNextTriggerTime()).thenReturn(triggerTime);
     }
 

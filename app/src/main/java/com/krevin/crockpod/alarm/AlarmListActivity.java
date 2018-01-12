@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.krevin.crockpod.CrockpodActivity;
+import com.krevin.crockpod.NotificationSetup;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 

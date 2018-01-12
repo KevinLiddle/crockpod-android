@@ -31,7 +31,7 @@ public class AlarmReceiverTest {
     @Before
     public void setUp() throws Exception {
         context = RuntimeEnvironment.application.getApplicationContext();
-        Podcast podcast = new Podcast("pname", "pfeed", "pauthor", "plogo");
+        Podcast podcast = new Podcast("pname", "pfeed", "pauthor", "plogo", "plogo_big");
         alarm = new Alarm(context, podcast, 12, 21);
         alarmReceiver = new AlarmReceiver();
         alarmRepository = new AlarmRepository(context);

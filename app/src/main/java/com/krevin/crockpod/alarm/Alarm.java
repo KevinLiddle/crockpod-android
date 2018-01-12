@@ -19,7 +19,8 @@ public class Alarm {
     public static final String PODCAST_FEED_KEY = "podcast_feed";
     public static final String PODCAST_NAME_KEY = "podcast_name";
     public static final String PODCAST_AUTHOR_KEY = "podcast_author";
-    public static final String PODCAST_LOGO_KEY = "podcast_logo";
+    public static final String PODCAST_LOGO_SMALL_KEY = "podcast_logo";
+    public static final String PODCAST_LOGO_LARGE_KEY = "podcast_logo_large";
 
 //    private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
     private static final Duration REPEAT_DURATION = Duration.standardDays(1);
@@ -65,7 +66,8 @@ public class Alarm {
         intent.putExtra(PODCAST_NAME_KEY, mPodcast.getName());
         intent.putExtra(PODCAST_FEED_KEY, mPodcast.getRssFeedUrl());
         intent.putExtra(PODCAST_AUTHOR_KEY, mPodcast.getAuthor());
-        intent.putExtra(PODCAST_LOGO_KEY, mPodcast.getLogoUrl());
+        intent.putExtra(PODCAST_LOGO_SMALL_KEY, mPodcast.getLogoUrlSmall());
+        intent.putExtra(PODCAST_LOGO_LARGE_KEY, mPodcast.getLogoUrlLarge());
         return intent;
     }
 
@@ -97,14 +99,13 @@ public class Alarm {
     }
 
     public DateTime getNextTriggerTime() {
-        DateTime now = DateTime.now();
-        DateTime target = now
+        DateTime target = DateTime.now()
                 .withHourOfDay(getHourOfDay())
                 .withMinuteOfHour(getMinute())
                 .withSecondOfMinute(0)
                 .withMillisOfSecond(0);
 
-        return target.isBefore(now) ? target.plus(REPEAT_DURATION) : target;
+        return target.isBeforeNow() ? target.plus(REPEAT_DURATION) : target;
     }
 
     @Override
@@ -138,6 +139,8 @@ public class Alarm {
                 intent.getStringExtra(PODCAST_NAME_KEY),
                 intent.getStringExtra(PODCAST_FEED_KEY),
                 intent.getStringExtra(PODCAST_AUTHOR_KEY),
-                intent.getStringExtra(PODCAST_LOGO_KEY));
+                intent.getStringExtra(PODCAST_LOGO_SMALL_KEY),
+                intent.getStringExtra(PODCAST_LOGO_LARGE_KEY)
+        );
     }
 }

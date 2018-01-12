@@ -42,7 +42,7 @@ class PodcastArrayAdapter extends ArrayAdapter<Podcast> {
         if (podcast != null) {
             titleView.setText(podcast.getName());
             authorView.setText(podcast.getAuthor());
-            logoView.setImageUrl(podcast.getLogoUrl(), mImageLoader);
+            logoView.setImageUrl(podcast.getLogoUrlSmall(), mImageLoader);
         }
         return view;
     }

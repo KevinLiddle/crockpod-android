@@ -6,16 +6,24 @@
               android:background="@color/black"
               android:orientation="vertical">
 
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/podcast_alarm_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/podcast_logo"/>
+
     <TextView
         android:id="@+id/alarm_text"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:gravity="center"
-        android:text="@string/good_morning"
+        android:hint="@string/good_morning"
         android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="80sp"/>
+        android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/alarm_cancel"
@@ -26,7 +34,7 @@
         android:background="@color/black"
         android:minHeight="0dp"
         android:minWidth="0dp"
-        android:text="@string/cancel"
+        android:text="@string/dismiss"
         android:textAllCaps="true"
         android:textAlignment="center"
         android:textColor="@color/white"

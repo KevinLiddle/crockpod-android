@@ -31,7 +31,7 @@ public class AlarmTest {
     @Before
     public void setUp() {
         context = RuntimeEnvironment.application.getApplicationContext();
-        podcast = new Podcast("name", "feed", "author", "logo");
+        podcast = new Podcast("name", "feed", "author", "logo", "logo_big");
     }
 
     @Test
@@ -41,7 +41,8 @@ public class AlarmTest {
         intent.putExtra(Alarm.PODCAST_FEED_KEY, podcast.getRssFeedUrl());
         intent.putExtra(Alarm.PODCAST_NAME_KEY, podcast.getName());
         intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, podcast.getAuthor());
-        intent.putExtra(Alarm.PODCAST_LOGO_KEY, podcast.getLogoUrl());
+        intent.putExtra(Alarm.PODCAST_LOGO_SMALL_KEY, podcast.getLogoUrlSmall());
+        intent.putExtra(Alarm.PODCAST_LOGO_LARGE_KEY, podcast.getLogoUrlLarge());
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
         intent.putExtra(Alarm.ALARM_ID_KEY, alarmId.toString());
@@ -51,7 +52,8 @@ public class AlarmTest {
         assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
         assertEquals(podcast.getName(), alarm.getPodcast().getName());
         assertEquals(podcast.getAuthor(), alarm.getPodcast().getAuthor());
-        assertEquals(podcast.getLogoUrl(), alarm.getPodcast().getLogoUrl());
+        assertEquals(podcast.getLogoUrlSmall(), alarm.getPodcast().getLogoUrlSmall());
+        assertEquals(podcast.getLogoUrlLarge(), alarm.getPodcast().getLogoUrlLarge());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
         assertEquals(alarmId, alarm.getId());
@@ -67,7 +69,8 @@ public class AlarmTest {
         assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
         assertEquals(podcast.getName(), alarm.getPodcast().getName());
         assertEquals(podcast.getAuthor(), alarm.getPodcast().getAuthor());
-        assertEquals(podcast.getLogoUrl(), alarm.getPodcast().getLogoUrl());
+        assertEquals(podcast.getLogoUrlSmall(), alarm.getPodcast().getLogoUrlSmall());
+        assertEquals(podcast.getLogoUrlLarge(), alarm.getPodcast().getLogoUrlLarge());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
         assertNotNull(alarm.getId());
@@ -77,7 +80,8 @@ public class AlarmTest {
         intent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");
         intent.putExtra(Alarm.PODCAST_NAME_KEY, "name");
         intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, "author");
-        intent.putExtra(Alarm.PODCAST_LOGO_KEY, "logo");
+        intent.putExtra(Alarm.PODCAST_LOGO_SMALL_KEY, "logo");
+        intent.putExtra(Alarm.PODCAST_LOGO_LARGE_KEY, "logo_big");
         intent.putExtra(Alarm.ALARM_ID_KEY, alarm.getId());
         intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
