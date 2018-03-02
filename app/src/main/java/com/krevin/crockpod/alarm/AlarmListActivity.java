@@ -49,6 +49,13 @@ public class AlarmListActivity extends CrockpodActivity {
         mAlarmList = findViewById(R.id.alarm_list);
         mAlarmList.setHasFixedSize(true);
         mAlarmList.setLayoutManager(new LinearLayoutManager(this));
+        mAlarmList.setOnFlingListener(new RecyclerView.OnFlingListener() {
+            @Override
+            public boolean onFling(int velocityX, int velocityY) {
+                refreshAlarmList();
+                return true;
+            }
+        });
     }
 
     @Override
