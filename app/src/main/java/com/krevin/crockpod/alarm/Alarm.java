@@ -22,8 +22,8 @@ public class Alarm {
     public static final String PODCAST_LOGO_SMALL_KEY = "podcast_logo";
     public static final String PODCAST_LOGO_LARGE_KEY = "podcast_logo_large";
 
-    private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
-//    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
+//    private static final Duration REPEAT_DURATION = Duration.standardMinutes(1);
+    private static final Duration REPEAT_DURATION = Duration.standardDays(1);
 
     private final UUID mId;
     private final Context mContext;
