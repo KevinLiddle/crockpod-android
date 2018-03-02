@@ -5,13 +5,15 @@ public class Podcast {
     private String mName;
     private String mRssFeedUrl;
     private String mAuthor;
-    private String mLogoUrl;
+    private String mLogoUrlSmall;
+    private String mLogoUrlLarge;
 
-    public Podcast(String name, String rssFeedUrl, String author, String logoUrl) {
+    public Podcast(String name, String rssFeedUrl, String author, String logoUrlSmall, String logoUrlLarge) {
         mName = name;
         mRssFeedUrl = rssFeedUrl;
         mAuthor = author;
-        mLogoUrl = logoUrl;
+        mLogoUrlSmall = logoUrlSmall;
+        mLogoUrlLarge = logoUrlLarge;
     }
 
     public String getName() {
@@ -26,8 +28,12 @@ public class Podcast {
         return mAuthor;
     }
 
-    public String getLogoUrl() {
-        return mLogoUrl;
+    public String getLogoUrlSmall() {
+        return mLogoUrlSmall;
+    }
+
+    public String getLogoUrlLarge() {
+        return mLogoUrlLarge;
     }
 
     public String toString() {
@@ -49,7 +55,9 @@ public class Podcast {
             return false;
         if (mAuthor != null ? !mAuthor.equals(podcast.mAuthor) : podcast.mAuthor != null)
             return false;
-        return mLogoUrl != null ? mLogoUrl.equals(podcast.mLogoUrl) : podcast.mLogoUrl == null;
+        if (mLogoUrlSmall != null ? !mLogoUrlSmall.equals(podcast.mLogoUrlSmall) : podcast.mLogoUrlSmall != null)
+            return false;
+        return mLogoUrlLarge != null ? mLogoUrlLarge.equals(podcast.mLogoUrlLarge) : podcast.mLogoUrlLarge == null;
 
     }
 }

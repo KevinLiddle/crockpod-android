@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ public class AlarmListActivity extends CrockpodActivity {
 
     public static Intent getIntent(Context context) {
         return new Intent(context, AlarmListActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
     }
 
     @Override
@@ -50,6 +49,13 @@ public class AlarmListActivity extends CrockpodActivity {
         mAlarmList = findViewById(R.id.alarm_list);
         mAlarmList.setHasFixedSize(true);
         mAlarmList.setLayoutManager(new LinearLayoutManager(this));
+        mAlarmList.setOnFlingListener(new RecyclerView.OnFlingListener() {
+            @Override
+            public boolean onFling(int velocityX, int velocityY) {
+                refreshAlarmList();
+                return true;
+            }
+        });
     }
 
     @Override

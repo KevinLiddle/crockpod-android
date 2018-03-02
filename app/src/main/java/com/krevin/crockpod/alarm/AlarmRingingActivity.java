@@ -1,33 +1,53 @@
 package com.krevin.crockpod.alarm;
 
-import android.app.Notification;
-import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.MediaController;
+import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.krevin.crockpod.CrockpodActivity;
+import com.krevin.crockpod.MediaPlayerService;
 import com.krevin.crockpod.R;
-import com.krevin.crockpod.alarm.repositories.AlarmRepository;
-import com.pkmmte.pkrss.Article;
-import com.pkmmte.pkrss.Callback;
-import com.pkmmte.pkrss.PkRSS;
-
-import java.io.IOException;
-import java.util.List;
 
 
-public class AlarmRingingActivity extends CrockpodActivity implements Callback {
+public class AlarmRingingActivity extends CrockpodActivity {
 
     private static final String TAG = AlarmRingingActivity.class.getCanonicalName();
-    private static final int ALARM_NOTIFICATION_ID = 33;
 
-    private MediaPlayer mMediaPlayer;
+    private View mPodcastLogoWrapperView;
+    private NetworkImageView mPodcastAlarmLogoView;
+    private MediaController mMediaController;
+    private MediaPlayerService mService;
+    private boolean mBound = false;
+    private Handler mHandler = new Handler();
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.d(TAG, "connected to the service");
+            MediaPlayerService.MediaPlayerBinder binder = (MediaPlayerService.MediaPlayerBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            setupViewsAndMediaController();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            Log.d(TAG, "unbound from service");
+            mBound = false;
+        }
+    };
 
     public static Intent getIntent(Context context) {
         return new Intent(context, AlarmRingingActivity.class);
@@ -36,79 +56,74 @@ public class AlarmRingingActivity extends CrockpodActivity implements Callback {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "creating the activity");
         setContentView(R.layout.activity_alarm_ringing);
 
+        mPodcastAlarmLogoView = findViewById(R.id.podcast_alarm_logo);
+        mPodcastLogoWrapperView = findViewById(R.id.podcast_logo_wrapper);
+
         Button cancelButton = findViewById(R.id.alarm_cancel);
-        cancelButton.setOnClickListener(v -> {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                mMediaPlayer = null;
-            }
-            finish();
-            startActivity(AlarmListActivity.getIntent(this));
-        });
-
-        showAlarmNotification();
-        String alarmId = getIntent().getStringExtra(Alarm.ALARM_ID_KEY);
-        Alarm alarm = new AlarmRepository(this).find(alarmId);
-        requestRssFeedAsync(alarm);
+        cancelButton.setOnClickListener(v -> stopPlaying());
     }
 
     @Override
-    public void onPreload() {}
+    protected void onStart() {
+        super.onStart();
+
+        Log.d(TAG, "is it bound? " + mBound);
+        if (!mBound) {
+            Intent intent = MediaPlayerService.getIntent(getApplicationContext());
+            bindService(intent, mConnection, 0);
+        }
+    }
+
 
     @Override
-    public void onLoaded(List<Article> newArticles) {
-        String mediaUrl = newArticles.get(0).getEnclosure().getUrl();
-        blastTheAlarm(mediaUrl);
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "hiding media controller and unbinding service");
+        mMediaController.hide();
+        unbindService(mConnection);
     }
 
-    @Override
-    public void onLoadFailed() {
-        Log.e(TAG, "OOPS! Couldn't fetch the RSS feed!");
-    }
+    private void setupViewsAndMediaController() {
+        Alarm alarm = mService.getAlarm();
+        Log.d(TAG, "setting up alarm: " + alarm);
 
-    private void requestRssFeedAsync(Alarm alarm) {
-        Log.d(TAG, alarm.getIntent().getExtras().toString());
+        ImageLoader imageLoader = getCrockpodApp().getHttpClient().getImageLoader();
+        mPodcastAlarmLogoView.setImageUrl(alarm.getPodcast().getLogoUrlLarge(), imageLoader);
 
-        PkRSS.with(this)
-                .load(alarm.getPodcast().getRssFeedUrl())
-                .callback(this)
-                .async();
-    }
-
-    private void blastTheAlarm(String mediaUrl) {
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-
-        try {
-            mMediaPlayer.setDataSource(mediaUrl);
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Error playing media from URL: %s", mediaUrl));
+        Log.d(TAG, "settuping up media controller and views");
+        Log.d(TAG, mPodcastAlarmLogoView.toString());
+        if (mMediaController == null) {
+            mMediaController = new MediaController(this);
+            mMediaController.setAnchorView(mPodcastLogoWrapperView);
+            mMediaController.setMediaPlayer(mService);
+            mHandler.post(() -> {
+                mMediaController.setEnabled(true);
+                mMediaController.show();
+            });
         }
 
-        setAlarmToMaxVolume();
-        mMediaPlayer.prepareAsync();
-        mMediaPlayer.setOnPreparedListener(mp -> mMediaPlayer.start());
+        mPodcastAlarmLogoView.setOnClickListener((v) -> mMediaController.show());
+
+        TextView podcastAlarmTitle = findViewById(R.id.alarm_text);
+        podcastAlarmTitle.setText(alarm.getPodcast().getName());
     }
 
-    private void showAlarmNotification() {
-        Notification.Builder builder = new Notification.Builder(this);
+    private void stopPlaying() {
+        if (mBound) {
+            Log.d(TAG, "STOPPING");
+            mMediaController.hide();
+            mService.stop();
+            mBound = false;
+        }
 
-        builder.setPriority(Notification.PRIORITY_MAX).
-                setCategory(Notification.CATEGORY_ALARM).
-                setContentTitle(getString(R.string.app_name)).
-                setSmallIcon(R.drawable.ic_crockpod_mascot).
-                setStyle(new Notification.BigTextStyle().bigText(getString(R.string.alarm_notification_text)));
+        finish();
 
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(ALARM_NOTIFICATION_ID, builder.build());
-    }
-
-    private void setAlarmToMaxVolume() {
-        AudioManager systemService = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int streamMaxVolume = systemService.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-        systemService.setStreamVolume(AudioManager.STREAM_ALARM, streamMaxVolume, AudioManager.FLAG_SHOW_UI);
+        if (isTaskRoot()) {
+            startActivity(AlarmListActivity.getIntent(this));
+        }
     }
 }

@@ -61,7 +61,8 @@ public class PodcastSearchTest {
                         .put("collectionName", "Purple Rain")
                         .put("feedUrl", "lakeminnetonka.com/feed")
                         .put("artistName", "Prince")
-                        .put("artworkUrl100", "lakeminnetonka.com/art")))
+                        .put("artworkUrl100", "lakeminnetonka.com/art")
+                        .put("artworkUrl600", "lakeminnetonka.com/art600")))
                 );
         doAnswer(args -> {
             Response.Listener<JSONObject> l = args.getArgument(1);
@@ -76,6 +77,7 @@ public class PodcastSearchTest {
         assertEquals("Purple Rain", actual.getName());
         assertEquals("Prince", actual.getAuthor());
         assertEquals("lakeminnetonka.com/feed", actual.getRssFeedUrl());
-        assertEquals("lakeminnetonka.com/art", actual.getLogoUrl());
+        assertEquals("lakeminnetonka.com/art", actual.getLogoUrlSmall());
+        assertEquals("lakeminnetonka.com/art600", actual.getLogoUrlLarge());
     }
 }

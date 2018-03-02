@@ -32,7 +32,13 @@ public class AlarmDataRepositoryTest {
 
     @Test
     public void canUpsertAndFindAlarms() {
-        Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
+        Podcast podcast = new Podcast(
+                "cool_podcast",
+                "cool_podcast_url",
+                "cool_author",
+                "cool_art",
+                "cool_big_art"
+        );
         Alarm alarm = new Alarm(context, podcast, 14, 33);
 
         alarmDataRepository.upsert(alarm);
@@ -43,9 +49,41 @@ public class AlarmDataRepositoryTest {
 
     @Test
     public void allReturnsAllAddedAlarmsInOrderOfTime() {
-        Alarm alarm1 = new Alarm(context, new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art"), 9, 25);
-        Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 8, 37);
-        Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 50);
+        Alarm alarm1 = new Alarm(
+                context,
+                new Podcast(
+                        "cool_podcast",
+                        "cool_podcast_url",
+                        "cool_author",
+                        "cool_art",
+                        "cool_big_art"
+                ),
+                9,
+                25
+        );
+        Alarm alarm2 = new Alarm(
+                context,
+                new Podcast(
+                        "neat_podcast",
+                        "neat_podcast_url",
+                        "neat_author",
+                        "neat_art",
+                        "neat_big_art"
+                ),
+                8,
+                37
+        );
+        Alarm alarm3 = new Alarm(
+                context,
+                new Podcast(
+                        "lame_podcast",
+                        "lame_podcast_url",
+                        "lame_author",
+                        "lame_art",
+                        "lame_big_art"
+                ),
+                20,
+                50);
 
         alarmDataRepository.upsert(alarm1);
         alarmDataRepository.upsert(alarm2);
@@ -60,9 +98,42 @@ public class AlarmDataRepositoryTest {
 
     @Test
     public void removeRemovesAlarmsFromRepoById() {
-        Alarm alarm1 = new Alarm(context, new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art"), 4, 40);
-        Alarm alarm2 = new Alarm(context, new Podcast("neat_podcast", "neat_podcast_url", "neat_author", "neat_art"), 3, 30);
-        Alarm alarm3 = new Alarm(context, new Podcast("lame_podcast", "lame_podcast_url", "lame_author", "lame_art"), 20, 20);
+        Alarm alarm1 = new Alarm(
+                context,
+                new Podcast(
+                        "cool_podcast",
+                        "cool_podcast_url",
+                        "cool_author",
+                        "cool_art",
+                        "cool_big_art"
+                ),
+                4,
+                40
+        );
+        Alarm alarm2 = new Alarm(
+                context,
+                new Podcast(
+                        "neat_podcast",
+                        "neat_podcast_url",
+                        "neat_author",
+                        "neat_art",
+                        "neat_big_art"
+                ),
+                3,
+                30
+        );
+        Alarm alarm3 = new Alarm(
+                context,
+                new Podcast(
+                        "lame_podcast",
+                        "lame_podcast_url",
+                        "lame_author",
+                        "lame_art",
+                        "lame_big_art"
+                ),
+                20,
+                20
+        );
 
         alarmDataRepository.upsert(alarm1);
         alarmDataRepository.upsert(alarm2);
@@ -85,8 +156,19 @@ public class AlarmDataRepositoryTest {
 
     @Test
     public void addDoesNotAddDuplicateAlarms() {
-        Podcast podcast = new Podcast("cool_podcast", "cool_podcast_url", "cool_author", "cool_art");
-        Alarm alarm = new Alarm(context, podcast, 14, 33);
+        Podcast podcast = new Podcast(
+                "cool_podcast",
+                "cool_podcast_url",
+                "cool_author",
+                "cool_art",
+                "cool_big_art"
+        );
+        Alarm alarm = new Alarm(
+                context,
+                podcast,
+                14,
+                33
+        );
 
         alarmDataRepository.upsert(alarm);
         alarmDataRepository.upsert(alarm);

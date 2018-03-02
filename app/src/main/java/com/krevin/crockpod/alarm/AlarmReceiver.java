@@ -1,12 +1,13 @@
 package com.krevin.crockpod.alarm;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.WakefulBroadcastReceiver;
 
+import com.krevin.crockpod.MediaPlayerService;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 
-public class AlarmReceiver extends WakefulBroadcastReceiver {
+public class AlarmReceiver extends BroadcastReceiver {
 
     public static Intent getIntent(Context context) {
         return new Intent(context, AlarmReceiver.class);
@@ -20,11 +21,8 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Alarm alarm = alarmRepository.find(alarmId);
         alarmRepository.set(alarm.buildNextAlarm());
 
-        Intent alarmRingingIntent = AlarmRingingActivity.getIntent(context);
-        alarmRingingIntent.putExtras(alarm.getIntent());
-        alarmRingingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                | Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_FROM_BACKGROUND);
-        context.startActivity(alarmRingingIntent);
+        Intent mediaPlayerServiceIntent = MediaPlayerService.getIntent(context.getApplicationContext());
+        mediaPlayerServiceIntent.putExtras(alarm.getIntent());
+        context.startForegroundService(mediaPlayerServiceIntent);
     }
 }

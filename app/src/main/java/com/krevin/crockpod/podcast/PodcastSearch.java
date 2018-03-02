@@ -29,7 +29,8 @@ public class PodcastSearch {
     private static final String RESPONSE_TITLE_KEY = "collectionName";
     private static final String RESPONSE_FEED_KEY = "feedUrl";
     private static final String RESPONSE_ARTIST_KEY = "artistName";
-    private static final String RESPONSE_ARTWORK_KEY = "artworkUrl100";
+    private static final String RESPONSE_ARTWORK_SMALL_KEY = "artworkUrl100";
+    private static final String RESPONSE_ARTWORK_LARGE_KEY = "artworkUrl600";
     private static final String RESPONSE_RESULTS_KEY = "results";
 
     private final HttpClient mHttpClient;
@@ -57,7 +58,8 @@ public class PodcastSearch {
                         json.getString(RESPONSE_TITLE_KEY),
                         json.getString(RESPONSE_FEED_KEY),
                         json.getString(RESPONSE_ARTIST_KEY),
-                        json.getString(RESPONSE_ARTWORK_KEY)
+                        json.getString(RESPONSE_ARTWORK_SMALL_KEY),
+                        json.getString(RESPONSE_ARTWORK_LARGE_KEY)
                 );
                 results.add(podcast);
             }

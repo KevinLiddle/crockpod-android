@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">CrockPod</string>
-    <string name="podcast_rss_feed_label">Podcast RSS feed</string>
     <string name="set_alarm">Set Alarm</string>
-    <string name="cancel">Cancel</string>
-    <string name="alarm_notification_text">WAKEY WAKEY</string>
+    <string name="dismiss">Dismiss</string>
     <string name="good_morning">Good Morning</string>
     <string name="podcast_search_hint">Search for podcasts</string>
     <string name="podcast_logo">Podcast Logo</string>
