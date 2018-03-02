@@ -1,14 +1,14 @@
 package com.krevin.crockpod;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AutoCompleteSearchView<T> extends AutoCompleteTextView {
+public class AutoCompleteSearchView<T> extends AppCompatAutoCompleteTextView {
 
     private static final int MINIMUM_SEARCH_TERM_LENGTH = 3;
 
