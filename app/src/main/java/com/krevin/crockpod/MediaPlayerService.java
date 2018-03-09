@@ -160,15 +160,8 @@ public class MediaPlayerService extends Service implements Callback, MediaContro
             Log.e(TAG, String.format("Error playing media from URL: %s", mediaUrl));
         }
 
-        setAlarmToMaxVolume();
         mMediaPlayer.prepareAsync();
         mMediaPlayer.setOnPreparedListener(mp -> start());
-    }
-
-    private void setAlarmToMaxVolume() {
-        AudioManager systemService = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int streamMaxVolume = systemService.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-        systemService.setStreamVolume(AudioManager.STREAM_ALARM, streamMaxVolume, AudioManager.FLAG_SHOW_UI);
     }
 
     public class MediaPlayerBinder extends Binder {
