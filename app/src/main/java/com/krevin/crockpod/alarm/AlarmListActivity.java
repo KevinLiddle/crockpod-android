@@ -113,8 +113,10 @@ public class AlarmListActivity extends CrockpodActivity {
         }
 
         void bindAlarm(final Alarm alarm) {
-            String text = alarm.getNextTriggerTime().toString(DateTimeFormat.forPattern(CLOCK_FORMAT)) +
-                    " - " + alarm.getPodcast().getName();
+            String text = alarm.getNextTriggerTime()
+                    .toString(DateTimeFormat.forPattern(CLOCK_FORMAT))
+                    .concat(" - ")
+                    .concat(alarm.getPodcast().getName());
             mAlarmTextView.setText(text);
 
             mDeleteAlarmButton.setOnClickListener(view -> {
