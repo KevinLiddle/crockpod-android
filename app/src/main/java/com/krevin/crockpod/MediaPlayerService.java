@@ -97,7 +97,7 @@ public class MediaPlayerService extends Service implements Callback, MediaContro
 
     @Override
     public boolean isPlaying() {
-        return mMediaPlayer.isPlaying();
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
     }
 
     @Override

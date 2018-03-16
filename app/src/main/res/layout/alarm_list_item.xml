@@ -1,94 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="10dp"
-              android:background="@color/lightAccent"
-              android:orientation="vertical">
+<com.chauthai.swipereveallayout.SwipeRevealLayout
+    android:id="@+id/swipe_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@color/lightAccent"
+    android:orientation="vertical"
+    app:dragEdge="right"
+    app:mode="same_level">
 
-    <RelativeLayout
-        android:id="@+id/alarm_container"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <ToggleButton
-            android:id="@+id/toggle_alarm_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_delete"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:id="@+id/alarm_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="10dp"
-            android:layout_toStartOf="@id/toggle_alarm_button"
-            android:ellipsize="end"
-            android:hint="7:00am - NPR Hourly News and other things that are super cool that idk about"
-            android:maxLines="1"/>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:background="@color/colorAccent"/>
-
-    <LinearLayout
-        android:id="@+id/delete_alarm_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:visibility="gone">
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_red_dark">
 
         <Button
             android:id="@+id/delete_alarm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:background="@android:color/transparent"
+            android:drawableBottom="@drawable/ic_delete"
+            android:drawableTint="@color/white"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/alarm_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawablePadding="5dp"
-            android:drawableStart="@drawable/ic_delete"
-            android:drawableTint="@color/white"
-            android:padding="5dp"
-            android:text="@string/delete"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-    </LinearLayout>
+            <ToggleButton
+                android:id="@+id/toggle_alarm_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_delete"
+                android:textColor="@color/white"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginEnd="10dp">
+            <TextView
+                android:id="@+id/alarm_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toStartOf="@id/toggle_alarm_button"
+                android:ellipsize="end"
+                android:hint="7:00am - NPR Hourly News and other things that are super cool that idk about"
+                android:maxLines="1"/>
 
-        <ImageButton
-            android:id="@+id/alarm_item_expand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_expand_more_black_24dp"
-            android:tint="@color/white"/>
+        </RelativeLayout>
+    </FrameLayout>
 
-        <ImageButton
-            android:id="@+id/alarm_item_contract"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_expand_less_black_24dp"
-            android:tint="@color/white"
-            android:visibility="gone"/>
-    </LinearLayout>
-
-</LinearLayout>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>
