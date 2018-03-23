@@ -27,9 +27,9 @@ public class Alarm {
 
     private final UUID mId;
     private final Context mContext;
-    private final Podcast mPodcast;
-    private final Integer mHourOfDay;
-    private final Integer mMinute;
+    private Podcast mPodcast;
+    private Integer mHourOfDay;
+    private Integer mMinute;
     private boolean mEnabled = true;
 
     public Alarm(Context context, Podcast podcast, int hourOfDay, int minute) {
@@ -75,12 +75,24 @@ public class Alarm {
         return mPodcast;
     }
 
+    public void setPodcast(Podcast podcast) {
+        mPodcast = podcast;
+    }
+
     public int getHourOfDay() {
         return mHourOfDay;
     }
 
+    public void setHourOfDay(int hourOfDay) {
+        mHourOfDay = hourOfDay;
+    }
+
     public int getMinute() {
         return mMinute;
+    }
+
+    public void setMinute(int minute) {
+        mMinute = minute;
     }
 
     public boolean isEnabled() {

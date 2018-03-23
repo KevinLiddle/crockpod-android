@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
@@ -99,6 +101,7 @@ public class AlarmListActivity extends CrockpodActivity {
     private class AlarmHolder extends RecyclerView.ViewHolder {
 
         private final SwipeRevealLayout mSwipeRevealLayout;
+        private final LinearLayout mAlarmLayout;
         private final TextView mAlarmTimeView;
         private final TextView mAlarmTextView;
         private final Button mDeleteAlarmButton;
@@ -107,6 +110,7 @@ public class AlarmListActivity extends CrockpodActivity {
         AlarmHolder(View itemView) {
             super(itemView);
             mSwipeRevealLayout = itemView.findViewById(R.id.swipe_layout);
+            mAlarmLayout = itemView.findViewById(R.id.alarm_layout);
             mAlarmTimeView = itemView.findViewById(R.id.alarm_time);
             mAlarmTextView = itemView.findViewById(R.id.alarm_text);
             mDeleteAlarmButton = itemView.findViewById(R.id.delete_alarm_button);
@@ -117,26 +121,20 @@ public class AlarmListActivity extends CrockpodActivity {
             mAlarmTimeView.setText(alarm.getNextTriggerTime().toString(DateTimeFormat.forPattern(CLOCK_FORMAT)));
             mAlarmTextView.setText(alarm.getPodcast().getName());
 
+            mAlarmLayout.setOnClickListener(view -> startActivity(SetAlarmActivity.getIntent(AlarmListActivity.this, alarm)));
+
             mDeleteAlarmButton.setOnClickListener(view -> {
                 mAlarmRepository.cancel(alarm);
                 refreshAlarmList();
             });
 
+            mToggleAlarmButton.setAlpha(alarm.isEnabled() ? 1.0f : 0.2f);
             mToggleAlarmButton.setChecked(alarm.isEnabled());
-            setToggleAlarmButtonOpacity();
             mToggleAlarmButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 alarm.toggle(isChecked);
-                setToggleAlarmButtonOpacity();
                 mAlarmRepository.set(alarm);
+                bindAlarm(alarm);
             });
-        }
-
-        void setToggleAlarmButtonOpacity() {
-            if (mToggleAlarmButton.isChecked()) {
-                mToggleAlarmButton.setAlpha(1.0f);
-            } else {
-                mToggleAlarmButton.setAlpha(0.2f);
-            }
         }
     }
 }
