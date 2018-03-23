@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -101,6 +99,7 @@ public class AlarmListActivity extends CrockpodActivity {
     private class AlarmHolder extends RecyclerView.ViewHolder {
 
         private final SwipeRevealLayout mSwipeRevealLayout;
+        private final TextView mAlarmTimeView;
         private final TextView mAlarmTextView;
         private final Button mDeleteAlarmButton;
         private final ToggleButton mToggleAlarmButton;
@@ -108,17 +107,15 @@ public class AlarmListActivity extends CrockpodActivity {
         AlarmHolder(View itemView) {
             super(itemView);
             mSwipeRevealLayout = itemView.findViewById(R.id.swipe_layout);
+            mAlarmTimeView = itemView.findViewById(R.id.alarm_time);
             mAlarmTextView = itemView.findViewById(R.id.alarm_text);
             mDeleteAlarmButton = itemView.findViewById(R.id.delete_alarm_button);
             mToggleAlarmButton = itemView.findViewById(R.id.toggle_alarm_button);
         }
 
         void bindAlarm(final Alarm alarm) {
-            String text = alarm.getNextTriggerTime()
-                    .toString(DateTimeFormat.forPattern(CLOCK_FORMAT))
-                    .concat(" - ")
-                    .concat(alarm.getPodcast().getName());
-            mAlarmTextView.setText(text);
+            mAlarmTimeView.setText(alarm.getNextTriggerTime().toString(DateTimeFormat.forPattern(CLOCK_FORMAT)));
+            mAlarmTextView.setText(alarm.getPodcast().getName());
 
             mDeleteAlarmButton.setOnClickListener(view -> {
                 mAlarmRepository.cancel(alarm);
