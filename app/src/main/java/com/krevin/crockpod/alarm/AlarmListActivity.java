@@ -10,10 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
@@ -22,9 +21,13 @@ import com.krevin.crockpod.CrockpodActivity;
 import com.krevin.crockpod.R;
 import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AlarmListActivity extends CrockpodActivity {
 
@@ -104,8 +107,9 @@ public class AlarmListActivity extends CrockpodActivity {
         private final LinearLayout mAlarmLayout;
         private final TextView mAlarmTimeView;
         private final TextView mAlarmTextView;
-        private final Button mDeleteAlarmButton;
+        private final ImageButton mDeleteAlarmButton;
         private final ToggleButton mToggleAlarmButton;
+        private final TextView mAlarmRepeatDaysView;
 
         AlarmHolder(View itemView) {
             super(itemView);
@@ -113,13 +117,19 @@ public class AlarmListActivity extends CrockpodActivity {
             mAlarmLayout = itemView.findViewById(R.id.alarm_layout);
             mAlarmTimeView = itemView.findViewById(R.id.alarm_time);
             mAlarmTextView = itemView.findViewById(R.id.alarm_text);
+            mAlarmRepeatDaysView = itemView.findViewById(R.id.alarm_repeat_days);
             mDeleteAlarmButton = itemView.findViewById(R.id.delete_alarm_button);
             mToggleAlarmButton = itemView.findViewById(R.id.toggle_alarm_button);
         }
 
         void bindAlarm(final Alarm alarm) {
-            mAlarmTimeView.setText(alarm.getNextTriggerTime().toString(DateTimeFormat.forPattern(CLOCK_FORMAT)));
+            mAlarmTimeView.setText(
+                    DateTime.now()
+                            .withHourOfDay(alarm.getHourOfDay())
+                            .withMinuteOfHour(alarm.getMinute())
+                            .toString(DateTimeFormat.forPattern(CLOCK_FORMAT)));
             mAlarmTextView.setText(alarm.getPodcast().getName());
+            mAlarmRepeatDaysView.setText(getRepeatDaysText(alarm));
 
             mAlarmLayout.setOnClickListener(view -> startActivity(SetAlarmActivity.getIntent(AlarmListActivity.this, alarm)));
 
@@ -135,6 +145,31 @@ public class AlarmListActivity extends CrockpodActivity {
                 mAlarmRepository.set(alarm);
                 bindAlarm(alarm);
             });
+        }
+
+        private String getRepeatDaysText(Alarm alarm) {
+            List<Boolean> repeatDays = alarm.getRepeatDays();
+
+            if (repeatDays.stream().allMatch(d -> d)) {
+                return "Every day";
+            }
+
+            if (repeatDays.equals(Arrays.asList(true, true, true, true, true, false, false))) {
+                return "Weekdays";
+            }
+
+            if (repeatDays.equals(Arrays.asList(false, false, false, false, false, true, true))) {
+                return "Weekends";
+            }
+
+            return Stream.of(6, 0, 1, 2, 3, 4, 5)
+                    .filter(repeatDays::get)
+                    .map(this::formatDay)
+                    .collect(Collectors.joining(", "));
+        }
+
+        private String formatDay(int i) {
+            return DateTime.now().withDayOfWeek(i + 1).toString("E");
         }
     }
 }

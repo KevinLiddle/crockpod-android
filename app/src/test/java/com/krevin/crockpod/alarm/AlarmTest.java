@@ -8,14 +8,19 @@ import com.krevin.crockpod.podcast.Podcast;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 @Config(constants = BuildConfig.class)
 public class AlarmTest {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     private Context context;
     private Podcast podcast;
 
@@ -37,6 +44,7 @@ public class AlarmTest {
     @Test
     public void creatingAlarmWithIntentGetsDataFromIntent() {
         UUID alarmId = UUID.randomUUID();
+
         Intent intent = AlarmReceiver.getIntent(context);
         intent.putExtra(Alarm.PODCAST_FEED_KEY, podcast.getRssFeedUrl());
         intent.putExtra(Alarm.PODCAST_NAME_KEY, podcast.getName());
@@ -47,6 +55,7 @@ public class AlarmTest {
         intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
         intent.putExtra(Alarm.ALARM_ID_KEY, alarmId.toString());
         intent.putExtra(Alarm.ALARM_ENABLED_KEY, false);
+        intent.putExtra(Alarm.ALARM_REPEAT_DAYS_KEY, "true,false,true,false,false,true,false");
         Alarm alarm = new Alarm(context, intent);
 
         assertEquals(podcast.getRssFeedUrl(), alarm.getPodcast().getRssFeedUrl());
@@ -56,10 +65,21 @@ public class AlarmTest {
         assertEquals(podcast.getLogoUrlLarge(), alarm.getPodcast().getLogoUrlLarge());
         assertEquals(12, alarm.getHourOfDay());
         assertEquals(34, alarm.getMinute());
+        assertEquals(Arrays.asList(true, false, true, false, false, true, false), alarm.getRepeatDays());
         assertEquals(alarmId, alarm.getId());
         assertFalse(alarm.isEnabled());
-        assertTrue(intent.filterEquals(alarm.getIntent()));
-        assertEquals(intent.getExtras().toString(), alarm.getIntent().getExtras().toString());
+        assertIntentsEqual(intent, alarm.getIntent());
+    }
+
+    @Test
+    public void repeatDaysDefaultsToEveryDay() {
+        UUID alarmId = UUID.randomUUID();
+
+        Intent intent = AlarmReceiver.getIntent(context);
+        intent.putExtra(Alarm.ALARM_ID_KEY, alarmId.toString());
+        Alarm alarm = new Alarm(context, intent);
+
+        assertEquals(Arrays.asList(true, true, true, true, true, true, true), alarm.getRepeatDays());
     }
 
     @Test
@@ -76,53 +96,116 @@ public class AlarmTest {
         assertNotNull(alarm.getId());
         assertTrue(alarm.isEnabled());
 
-        Intent intent = AlarmReceiver.getIntent(context);
-        intent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");
-        intent.putExtra(Alarm.PODCAST_NAME_KEY, "name");
-        intent.putExtra(Alarm.PODCAST_AUTHOR_KEY, "author");
-        intent.putExtra(Alarm.PODCAST_LOGO_SMALL_KEY, "logo");
-        intent.putExtra(Alarm.PODCAST_LOGO_LARGE_KEY, "logo_big");
-        intent.putExtra(Alarm.ALARM_ID_KEY, alarm.getId());
-        intent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
-        intent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
-        intent.putExtra(Alarm.ALARM_ENABLED_KEY, true);
+        Intent expectedIntent = AlarmReceiver.getIntent(context);
+        expectedIntent.putExtra(Alarm.PODCAST_FEED_KEY, "feed");
+        expectedIntent.putExtra(Alarm.PODCAST_NAME_KEY, "name");
+        expectedIntent.putExtra(Alarm.PODCAST_AUTHOR_KEY, "author");
+        expectedIntent.putExtra(Alarm.PODCAST_LOGO_SMALL_KEY, "logo");
+        expectedIntent.putExtra(Alarm.PODCAST_LOGO_LARGE_KEY, "logo_big");
+        expectedIntent.putExtra(Alarm.ALARM_ID_KEY, alarm.getId().toString());
+        expectedIntent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
+        expectedIntent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
+        expectedIntent.putExtra(Alarm.ALARM_ENABLED_KEY, true);
+        expectedIntent.putExtra(Alarm.ALARM_REPEAT_DAYS_KEY, "true,true,true,true,true,true,true");
 
-        assertTrue(intent.filterEquals(alarm.getIntent()));
-        assertEquals(intent.getExtras().toString(), alarm.getIntent().getExtras().toString());
+        assertIntentsEqual(expectedIntent, alarm.getIntent());
 
         alarm.toggle(false);
-        intent.putExtra(Alarm.ALARM_ENABLED_KEY, false);
-        assertTrue(intent.filterEquals(alarm.getIntent()));
+        expectedIntent.putExtra(Alarm.ALARM_ENABLED_KEY, false);
+        assertIntentsEqual(expectedIntent, alarm.getIntent());
+    }
+
+    @Test
+    public void setRepeatDaysErrorsIfLengthIsNotSeven() {
+        Alarm alarm = new Alarm(context, podcast, 12, 34);
+        List<Boolean> repeatDays = Arrays.asList(true, false, true, false, true, true, true);
+        alarm.setRepeatDays(repeatDays);
+
+        assertEquals(repeatDays, alarm.getRepeatDays());
+
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("setRepeatDays must be called with 7 values! Duh!");
+        alarm.setRepeatDays(Arrays.asList(true, false));
     }
 
     @Test
     public void getNextTriggerTimeReturnsTheNextDateTimeOfTheHourAndMinute() {
         DateTime now = DateTime.now();
-        int hour = (now.getHourOfDay() + 1) % 24;
-        int minute = (now.getMinuteOfHour() + 5) % 60;
+        DateTime later = now.plusHours(1).plusMinutes(5);
 
-        Alarm alarm = new Alarm(context, podcast, hour, minute);
+        Alarm alarm = new Alarm(context, podcast, later.getHourOfDay(), later.getMinuteOfHour());
 
         DateTime triggerTime = alarm.getNextTriggerTime();
 
-        assertEquals(hour, triggerTime.getHourOfDay());
-        assertEquals(minute, triggerTime.getMinuteOfHour());
+        assertEquals(later.getHourOfDay(), triggerTime.getHourOfDay());
+        assertEquals(later.getMinuteOfHour(), triggerTime.getMinuteOfHour());
         assertEquals(0, triggerTime.getSecondOfMinute());
         assertEquals(0, triggerTime.getMillisOfSecond());
         assertTrue(triggerTime.isAfter(now));
     }
 
     @Test
-    public void getNextTriggerTimeReturnsTheNextDateTimeOfTheHourAndMinuteWhenThe() {
-        DateTime now = DateTime.now();
-        DateTime before = new DateTime(now).minusHours(1).minusMinutes(5);
+    public void getNextTriggerTimeReturnsATimeForTomorrowWhenHourAndMinuteHavePassedForToday() {
+        DateTime before = DateTime.now()
+                .minusHours(1)
+                .minusMinutes(5)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
 
         Alarm alarm = new Alarm(context, podcast, before.getHourOfDay(), before.getMinuteOfHour());
 
         DateTime triggerTime = alarm.getNextTriggerTime();
 
-        assertEquals(before.getHourOfDay(), triggerTime.getHourOfDay());
-        assertEquals(before.getMinuteOfHour(), triggerTime.getMinuteOfHour());
-        assertTrue(triggerTime.isAfter(now));
+        assertEquals(before.plusDays(1), triggerTime);
+    }
+
+    @Test
+    public void getNextTriggerTimeReturnsTimeForNextEnabledRepeatDay() {
+        DateTime before = DateTime.now()
+                .minusHours(1)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
+        Alarm alarm = new Alarm(context, podcast, before.getHourOfDay(), before.getMinuteOfHour());
+
+        int dayOfWeekIndex = before.getDayOfWeek(); // 1-indexed, starts on Sunday
+        List<Boolean> repeatDays = Arrays.asList(true, true, true, true, true, true, true);
+
+        repeatDays.set(dayOfWeekIndex % 7, false); // no-repeat tomorrow
+        alarm.setRepeatDays(repeatDays);
+        assertEquals(before.plusDays(2), alarm.getNextTriggerTime());
+
+        repeatDays.set((dayOfWeekIndex + 1) % 7, false); // no-repeat two days from now
+        repeatDays.set((dayOfWeekIndex + 2) % 7, false); // no-repeat three days from now
+        alarm.setRepeatDays(repeatDays);
+        assertEquals(before.plusDays(4), alarm.getNextTriggerTime());
+    }
+
+    @Test
+    public void getNextTriggerTimeReturnsNextOccurenceOfTimeIfThereAreNoRepeatDays() {
+        DateTime before = DateTime.now()
+                .minusHours(1)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
+        Alarm alarm = new Alarm(context, podcast, before.getHourOfDay(), before.getMinuteOfHour());
+
+        alarm.setRepeatDays(Arrays.asList(false, false, false, false, false, false, false));
+        assertEquals(before.plusDays(1), alarm.getNextTriggerTime());
+    }
+
+    @Test
+    public void isRepeatingIsTrueIfHasARepeatDay() {
+        Alarm alarm = new Alarm(context, podcast, 1, 1);
+
+        alarm.setRepeatDays(Arrays.asList(false, false, false, true, false, false, false));
+        assertTrue(alarm.isRepeating());
+
+        alarm.setRepeatDays(Arrays.asList(false, false, false, false, false, false, false));
+        assertFalse(alarm.isRepeating());
+    }
+
+    private void assertIntentsEqual(Intent expected, Intent actual) {
+        assertTrue(expected.filterEquals(actual));
+        assertArrayEquals(expected.getExtras().keySet().toArray(), actual.getExtras().keySet().toArray());
+        assertEquals(expected.getExtras().toString(), actual.getExtras().toString());
     }
 }

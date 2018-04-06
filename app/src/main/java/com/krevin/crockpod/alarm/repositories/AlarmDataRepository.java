@@ -46,7 +46,7 @@ class AlarmDataRepository {
                 .stream()
                 .map(e -> buildAlarm(e.getValue().toString()))
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparingInt(a -> a.getNextTriggerTime().getMinuteOfDay()))
+                .sorted(Comparator.comparingInt(a -> a.getHourOfDay() * 100 + a.getMinute()))
                 .collect(Collectors.toList());
     }
 

@@ -6,4 +6,11 @@
     <string name="podcast_search_hint">Search for podcasts</string>
     <string name="podcast_logo">Podcast Logo</string>
     <string name="delete">Delete</string>
+    <string name="sun">Sun</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
 </resources>
