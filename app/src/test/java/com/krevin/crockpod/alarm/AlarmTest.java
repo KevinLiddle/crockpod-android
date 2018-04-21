@@ -106,7 +106,7 @@ public class AlarmTest {
         expectedIntent.putExtra(Alarm.ALARM_HOUR_KEY, 12);
         expectedIntent.putExtra(Alarm.ALARM_MINUTE_KEY, 34);
         expectedIntent.putExtra(Alarm.ALARM_ENABLED_KEY, true);
-        expectedIntent.putExtra(Alarm.ALARM_REPEAT_DAYS_KEY, "true,true,true,true,true,true,true");
+        expectedIntent.putExtra(Alarm.ALARM_REPEAT_DAYS_KEY, "false,false,false,false,false,false,false");
 
         assertIntentsEqual(expectedIntent, alarm.getIntent());
 

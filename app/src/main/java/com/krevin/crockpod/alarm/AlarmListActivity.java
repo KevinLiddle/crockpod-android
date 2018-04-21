@@ -129,7 +129,12 @@ public class AlarmListActivity extends CrockpodActivity {
                             .withMinuteOfHour(alarm.getMinute())
                             .toString(DateTimeFormat.forPattern(CLOCK_FORMAT)));
             mAlarmTextView.setText(alarm.getPodcast().getName());
-            mAlarmRepeatDaysView.setText(getRepeatDaysText(alarm));
+
+            if (alarm.isRepeating()) {
+                mAlarmRepeatDaysView.setText(getRepeatDaysText(alarm));
+            } else {
+                mAlarmRepeatDaysView.setVisibility(View.GONE);
+            }
 
             mAlarmLayout.setOnClickListener(view -> startActivity(SetAlarmActivity.getIntent(AlarmListActivity.this, alarm)));
 

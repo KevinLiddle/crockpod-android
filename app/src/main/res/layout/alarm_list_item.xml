@@ -11,14 +11,14 @@
     app:dragEdge="right"
     app:mode="same_level">
 
-        <ImageButton
-            android:id="@+id/delete_alarm_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="25dp"
-            android:src="@drawable/ic_delete"
-            android:background="@android:color/holo_red_dark"
-            android:tint="@color/white"/>
+    <ImageButton
+        android:id="@+id/delete_alarm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_red_dark"
+        android:paddingHorizontal="25dp"
+        android:src="@drawable/ic_delete"
+        android:tint="@color/white"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -41,47 +41,49 @@
                 android:src="@drawable/ic_delete"
                 android:textColor="@color/white"/>
 
+
             <LinearLayout
-                android:id="@+id/alarm_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/toggle_alarm_button"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/alarm_layout"
+                    android:layout_width="85dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginEnd="20dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/alarm_time"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
                         android:hint="7:00am"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
 
                     <TextView
-                        android:id="@+id/alarm_text"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/alarm_repeat_days"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:ellipsize="end"
-                        android:hint="NPR Hourly News and other things"
-                        android:maxLines="1"
-                        android:textSize="16sp"/>
+                        android:hint="Mon, Tue, Wed, Thu, Fri, Sat"
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/alarm_repeat_days"
+                    android:id="@+id/alarm_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textSize="12sp"/>
+                    android:ellipsize="end"
+                    android:hint="NPR Hourly News and other things"
+                    android:maxLines="1"
+                    android:textSize="16sp"/>
             </LinearLayout>
+
 
         </RelativeLayout>
     </FrameLayout>

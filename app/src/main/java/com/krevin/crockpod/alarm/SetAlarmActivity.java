@@ -107,6 +107,7 @@ public class SetAlarmActivity extends CrockpodActivity {
                 mAlarm.setRepeatDays(getRepeatDays());
                 mAlarmRepository.set(mAlarm);
                 finish();
+                startActivity(AlarmListActivity.getIntent(this));
             }
         });
 

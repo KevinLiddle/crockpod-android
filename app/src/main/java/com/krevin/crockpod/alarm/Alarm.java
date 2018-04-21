@@ -41,7 +41,7 @@ public class Alarm {
         mPodcast = podcast;
         mHourOfDay = hourOfDay;
         mMinute = minute;
-        mRepeatDays = convertToList(null);
+        mRepeatDays = generateRepeatDays(false);
     }
 
     public Alarm(Context context, Intent intent) {
@@ -183,12 +183,16 @@ public class Alarm {
 
     private List<Boolean> convertToList(String repeatDays) {
         if (repeatDays == null) {
-            return Stream.generate(() -> true).limit(7).collect(Collectors.toList());
+            return generateRepeatDays(true);
         }
 
         return Arrays.stream(repeatDays.split(","))
                 .map(Boolean::valueOf)
                 .collect(Collectors.toList());
+    }
+
+    private List<Boolean> generateRepeatDays(boolean doesRepeat) {
+        return Stream.generate(() -> doesRepeat).limit(7).collect(Collectors.toList());
     }
 
     private Podcast buildPodcast(Intent intent) {
