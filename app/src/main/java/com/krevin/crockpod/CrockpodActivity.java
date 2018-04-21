@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.krevin.crockpod.alarm.AlarmListActivity;
+
 
 public class CrockpodActivity extends AppCompatActivity {
 
@@ -19,10 +21,14 @@ public class CrockpodActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
         View view = getLayoutInflater().inflate(R.layout.crockpod_actionbar, null);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
         getSupportActionBar().setCustomView(view, layoutParams);
         Toolbar parent = (Toolbar) view.getParent();
         parent.setContentInsetsAbsolute(0, 0);
+
+        view.setOnClickListener(v -> startActivity(AlarmListActivity.getIntent(this)));
     }
 }

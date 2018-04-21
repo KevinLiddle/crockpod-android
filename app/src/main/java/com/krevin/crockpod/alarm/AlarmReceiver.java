@@ -19,7 +19,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         AlarmRepository alarmRepository = new AlarmRepository(context.getApplicationContext());
         Alarm alarm = alarmRepository.find(alarmId);
-        alarmRepository.set(alarm.buildNextAlarm());
+
+        alarm.toggle(alarm.isRepeating());
+        alarmRepository.set(alarm);
 
         Intent mediaPlayerServiceIntent = MediaPlayerService.getIntent(context.getApplicationContext());
         mediaPlayerServiceIntent.putExtras(alarm.getIntent());

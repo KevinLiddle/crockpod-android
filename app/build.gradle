@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.krevin.crockpod"
         minSdkVersion 26
@@ -29,16 +28,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.volley:volley:1.1.0'
-    compile 'com.pkmmte.pkrss:pkrss:1.2'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
-    compile 'joda-time:joda-time:2.9.9'
-    compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.volley:volley:1.1.0'
+    implementation 'com.pkmmte.pkrss:pkrss:1.2'
+    implementation 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
+    implementation 'joda-time:joda-time:2.9.9'
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.15.0'
-    testCompile 'org.robolectric:robolectric:3.7.1'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.15.0'
+    testImplementation 'org.robolectric:robolectric:3.7.1'
 }

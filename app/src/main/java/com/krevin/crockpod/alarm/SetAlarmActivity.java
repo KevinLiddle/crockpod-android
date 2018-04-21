@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -19,9 +20,22 @@ import com.krevin.crockpod.alarm.repositories.AlarmRepository;
 import com.krevin.crockpod.podcast.Podcast;
 import com.krevin.crockpod.podcast.PodcastSearch;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SetAlarmActivity extends CrockpodActivity {
+
+    private static final List<Integer> DAY_IDS = Arrays.asList(
+            R.id.mon_check,
+            R.id.tue_check,
+            R.id.wed_check,
+            R.id.thu_check,
+            R.id.fri_check,
+            R.id.sat_check,
+            R.id.sun_check
+    );
 
     private Alarm mAlarm;
     private AlarmRepository mAlarmRepository;
@@ -83,17 +97,34 @@ public class SetAlarmActivity extends CrockpodActivity {
             refreshViews();
         });
 
+        setRepeatDays();
+
         Button setAlarmButton = findViewById(R.id.set_alarm);
         setAlarmButton.setOnClickListener(v -> {
             if (mAlarm.getPodcast() != null) {
                 mAlarm.setHourOfDay(mTimePicker.getHour());
                 mAlarm.setMinute(mTimePicker.getMinute());
+                mAlarm.setRepeatDays(getRepeatDays());
                 mAlarmRepository.set(mAlarm);
                 finish();
+                startActivity(AlarmListActivity.getIntent(this));
             }
         });
 
         refreshViews();
+    }
+
+    private List<Boolean> getRepeatDays() {
+        return DAY_IDS.stream()
+                .map(dayId -> ((CheckBox) findViewById(dayId)).isChecked())
+                .collect(Collectors.toList());
+    }
+
+    private void setRepeatDays() {
+        for (int i = 0; i < DAY_IDS.size(); i++) {
+            CheckBox view = findViewById(DAY_IDS.get(i));
+            view.setChecked(mAlarm.getRepeatDays().get(i));
+        }
     }
 
     private void refreshViews() {

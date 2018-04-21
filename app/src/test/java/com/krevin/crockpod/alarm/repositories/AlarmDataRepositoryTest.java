@@ -13,6 +13,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -40,6 +41,7 @@ public class AlarmDataRepositoryTest {
                 "cool_big_art"
         );
         Alarm alarm = new Alarm(context, podcast, 14, 33);
+        alarm.setRepeatDays(Arrays.asList(true, false, true, true, false, true, false));
 
         alarmDataRepository.upsert(alarm);
         Alarm fetchedAlarm = alarmDataRepository.find(alarm.getId().toString());
