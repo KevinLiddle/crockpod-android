@@ -43,6 +43,7 @@
 
 
             <LinearLayout
+                android:id="@+id/alarm_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -51,7 +52,6 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:id="@+id/alarm_layout"
                     android:layout_width="85dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
